@@ -138,8 +138,8 @@
  <div id="sportsRoster" class="sports-roster hidden"></div>
 </div>
 <div class="sports-tabs" id="sportsViews">
-  <button data-view="live" class="active"><span class="sports-live-dot"></span> مباشر</button>
-  <button data-view="today">اليوم</button><button data-view="tomorrow">غدًا</button><button data-view="results">النتائج</button><button data-view="standings">الترتيب</button><button data-view="competitions">البطولات</button><button data-view="teams">الأندية</button>
+  <button data-view="live"><span class="sports-live-dot"></span> مباشر</button>
+  <button data-view="today" class="active">اليوم</button><button data-view="tomorrow">غدًا</button><button data-view="next">القادمة</button><button data-view="results">النتائج</button><button data-view="standings">الترتيب</button><button data-view="competitions">البطولات</button><button data-view="teams">الأندية</button>
  </div>
  <div class="sports-filters">
   <label class="sports-filter-field"><span>الرياضة</span><select id="sportsSport"><option value="all">كل الرياضات</option><option value="Soccer">كرة القدم</option><option value="Basketball">كرة السلة</option></select></label>
@@ -152,9 +152,9 @@
  <div class="sports-note" id="sportsNote">المواعيد والفرق من مزود بيانات رياضي مستقل، وقد لا تشمل كل المباريات. شعارات الأندية للتمييز بين الفرق ولا تعني شراكة أو حقوق بث. لا تتوفر النتائج الحية الشاملة مع المصدر المجاني الحالي؛ يحتاج ذلك ربط مزود نتائج. لن تُعرض بثوث مباريات داخل أبو داحم إلا إذا أذن صاحب الحقوق بتضمينها. الموقع لا يعرض إعلانات خاصة به، وقد تظهر إعلانات لدى القنوات الخارجية.</div>
 </section>
 <section id="kick" class="kick hidden"><h2>مشاهدة قناة Kick</h2><input id="kickname" placeholder="اسم القناة بدون @"><button id="kickbtn" class="primary">عرض البث</button><div id="frame" class="frame hidden"><iframe id="player" allowfullscreen title="Kick stream"></iframe></div></section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
-const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='live',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='',sportsOnlyAhli=false,sportsCurrentMatch=null;
+const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='today',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='',sportsOnlyAhli=false,sportsCurrentMatch=null;
 const clubArabic={'Al Hilal':'الهلال','Al-Hilal':'الهلال','Al Nassr':'النصر','Al-Nassr':'النصر','Al Ahli':'الأهلي','Al-Ahli':'الأهلي','Al Ittihad':'الاتحاد','Al-Ittihad':'الاتحاد','Al Shabab':'الشباب','Al-Shabab':'الشباب','Real Madrid':'ريال مدريد','Barcelona':'برشلونة','Atletico Madrid':'أتلتيكو مدريد','Manchester City':'مانشستر سيتي','Manchester United':'مانشستر يونايتد','Liverpool':'ليفربول','Arsenal':'آرسنال','Chelsea':'تشيلسي','Tottenham':'توتنهام','Bayern Munich':'بايرن ميونخ','Borussia Dortmund':'بوروسيا دورتموند','Inter':'إنتر ميلان','AC Milan':'ميلان','Juventus':'يوفنتوس','Paris Saint-Germain':'باريس سان جيرمان','PSG':'باريس سان جيرمان','Napoli':'نابولي','Roma':'روما','Al Qadsiah':'القادسية','Al Ettifaq':'الاتفاق','Al Taawoun':'التعاون'};
-const sportViewTitles={live:['المباريات المباشرة','المباريات التي يجري تحديث بياناتها'],today:['مباريات اليوم','جدول مباريات اليوم بتوقيت السعودية'],tomorrow:['مباريات الغد','المواعيد القادمة بتوقيت السعودية'],results:['النتائج','المباريات والنتائج المسجلة'],standings:['ترتيب البطولات','جدول النقاط والأهداف'],competitions:['البطولات والكؤوس','الدوريات المحلية والقارية والعالمية'],teams:['الأندية والمنتخبات','ابحث عن النادي أو اعرض فرق البطولة']};
+const sportViewTitles={live:['المباريات المباشرة','المباريات التي يجري تحديث بياناتها'],today:['مباريات اليوم','جدول مباريات اليوم بتوقيت السعودية'],tomorrow:['مباريات الغد','المواعيد القادمة بتوقيت السعودية'],next:['المباريات القادمة','الجدول القادم حسب تغطية المصدر'],results:['النتائج','المباريات والنتائج المسجلة'],standings:['ترتيب البطولات','جدول النقاط والأهداف'],competitions:['البطولات والكؤوس','الدوريات المحلية والقارية والعالمية'],teams:['الأندية والمنتخبات','ابحث عن النادي أو اعرض فرق البطولة']};
 function sportsArabic(name,kind='team'){const n=String(name||'');if(kind==='league')return ({'Saudi Pro League':'دوري روشن السعودي','English Premier League':'الدوري الإنجليزي الممتاز','Premier League':'الدوري الإنجليزي الممتاز','Spanish La Liga':'الدوري الإسباني','La Liga':'الدوري الإسباني','Italian Serie A':'الدوري الإيطالي','Serie A':'الدوري الإيطالي','German Bundesliga':'الدوري الألماني','Bundesliga':'الدوري الألماني','UEFA Champions League':'دوري أبطال أوروبا','FIFA World Cup':'كأس العالم','FIFA Club World Cup':'كأس العالم للأندية','AFC Champions League Elite':'دوري أبطال آسيا للنخبة','NBA':'دوري كرة السلة الأمريكي'}[n]||n);return clubArabic[n]||n}
 function sportsEscape(v){return esc(v===0?'0':v==null?'':String(v))}
 function renderSportsCompetitions(items){
@@ -173,7 +173,7 @@ function renderSportsTable(rows){
 }
 function sportsDateTime(x){
  const raw=x.date||'';if(!raw)return 'الموعد غير متوفر';
- const dateTime=raw.includes('T')?raw:(x.time?raw+'T'+x.time.slice(0,8):raw);
+ const dateTime=typeof x.timestamp==='string'&&x.timestamp.includes('T')?x.timestamp:(raw.includes('T')?raw:(x.time?raw+'T'+x.time.slice(0,8)+'Z':raw));
  const d=new Date(dateTime);if(!Number.isNaN(d.getTime()))return d.toLocaleString('ar-SA',{timeZone:'Asia/Riyadh',weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
  return raw+(x.time?' · '+x.time.slice(0,5):'');
 }
