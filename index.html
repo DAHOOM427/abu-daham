@@ -74,7 +74,7 @@
  </div>
  <div class="sports-feed-head"><div><strong id="sportsFeedTitle">المباريات المباشرة</strong><small id="sportsFeedSubtitle">حسب البيانات المتاحة من المزوّد</small></div><span id="sportsCount" class="sports-count"></span></div>
  <div id="sportsStatus" class="sports-empty">جاري تحميل البطولات...</div><div id="sportsResults"></div>
- <div class="sports-note" id="sportsNote">يعرض هذا القسم بيانات النتائج والمواعيد فقط، ولا يوفّر بثًا للمباريات. حقوق الشعارات والبيانات الرياضية تخضع لشروط أصحابها.</div>
+ <div class="sports-note" id="sportsNote">البيانات المجانية الحالية محدودة. لتوسيع الدوريات والفرق وتفعيل استعلامات النتائج الحية، اربط مفتاح API-Football المجاني في Vercel باسم <code>API_FOOTBALL_KEY</code>. الخطة المجانية تعطي 100 طلب يوميًا؛ راجع <a href="https://www.api-football.com/pricing" target="_blank" rel="noopener">الخطط</a> و<a href="https://www.api-football.com/terms" target="_blank" rel="noopener">شروط الاستخدام</a>. هذا المفتاح لا يمنح حقوق شعارات الأندية أو حقوق البطولات تلقائيًا، ولا يوفّر حقوق بث فيديو المباريات.</div>
 </section>
 <section id="kick" class="kick hidden"><h2>مشاهدة قناة Kick</h2><input id="kickname" placeholder="اسم القناة بدون @"><button id="kickbtn" class="primary">عرض البث</button><div id="frame" class="frame hidden"><iframe id="player" allowfullscreen title="Kick stream"></iframe></div></section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
 const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='live',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='';
@@ -209,9 +209,9 @@ $('#prevPage').onclick=()=>{if(page>1){page--;load()}};$('#nextPage').onclick=()
 $('#results').addEventListener('click',e=>{const card=e.target.closest('[data-card]');if(card)showDetail(lastItems[Number(card.dataset.card)])});
 $('#detailClose').onclick=()=>$('#detail').classList.add('hidden');$('#detail').addEventListener('click',e=>{if(e.target===$('#detail'))$('#detail').classList.add('hidden')});
 $('#sportsViews').addEventListener('click',e=>{const b=e.target.closest('button[data-view]');if(!b)return;sportsView=b.dataset.view;sportsSelectedTeam='';loadSports()});
-$('#sportsCompetition').addEventListener('change',e=>{sportsLeague=e.target.value;const opt=e.target.selectedOptions?.[0];sportsSeason=opt?.dataset?.season||'';sportsSelectedTeam='';if(sportsView==='standings'||sportsView==='teams')loadSports()});
+$('#sportsCompetition').addEventListener('change',e=>{sportsLeague=e.target.value;const opt=e.target.selectedOptions?.[0];sportsSeason=opt?.dataset?.season||'';sportsSelectedTeam='';loadSports()});
 $('#sportsSport').addEventListener('change',e=>{sportsSport=e.target.value;if(sportsView==='competitions')loadSports()});
-$('#sportsSearchButton').onclick=()=>loadSports();
+$('#sportsSearchButton').onclick=()=>{if(sportsView!=='competitions'&&sportsView!=='teams'&&$('#sportsSearch').value.trim()){sportsView='teams';sportsSelectedTeam=''}loadSports()};
 $('#sportsSearch').addEventListener('keydown',e=>{if(e.key==='Enter')loadSports()});
 $('#sportsRefresh').onclick=()=>loadSports();
 $('#sportsResults').addEventListener('click',e=>{
