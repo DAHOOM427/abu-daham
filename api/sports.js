@@ -124,8 +124,9 @@ async function footballHandler(req,res,action){
  if(selectedStatic&&selectedStatic.sport!=="Soccer")return fallbackHandler(req,res,action);
  const season=seasonYear(q.season);
  if(action==="competitions"){
-  const params={current:q.all==="1"?"false":"true",search:String(q.search||"").trim().slice(0,80),country:String(q.country||"").trim()};
-  if(!params.search)delete params.search;
+  const search=String(q.search||"").trim().slice(0,80);
+  const params={country:String(q.country||"").trim()};
+  if(search)params.search=search;else if(q.all!=="1")params.current="true";
   const d=await football("/leagues",params,3600000);
   const competitions=(d.response||[]).map(mapCompetition);
   const includeBasketball=!params.search||/basket|nba|كرة/i.test(params.search);
