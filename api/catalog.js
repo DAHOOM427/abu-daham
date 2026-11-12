@@ -4,7 +4,7 @@ const CINEMETA="https://v3-cinemeta.strem.io";
 const JIKAN="https://api.jikan.moe/v4";
 
 async function get(url){
- const r=await fetch(url,{headers:{Accept:"application/json"},signal:AbortSignal.timeout(14000}});
+ const r=await fetch(url,{headers:{Accept:"application/json"},signal:AbortSignal.timeout(14000)});
  if(!r.ok)throw new Error("Provider returned "+r.status);
  return r.json();
 }
@@ -45,5 +45,5 @@ export default async function handler(req,res){
   else providers.push({provider:name,error:"المصدر غير متاح مؤقتاً"});
  });
  const unique=[...new Map(items.filter(x=>x.id).map(x=>[x.type+":"+x.id,x])).values()];
- return json(res,200,{items:unique.slice(0,75),page,providers},{ "Cache-Control":"public, s-maxage=1800, stale-while-revalidate=86400" });
+ return json(res,200,{items:unique.slice(0,75),page,providers},{"Cache-Control":"public, s-maxage=1800, stale-while-revalidate=86400"});
 }
