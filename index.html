@@ -137,7 +137,6 @@ async function loadSportsCompetitions(search=''){
  if(current&&sportsCompetitions.some(x=>String(x.id)===String(current)))$('#sportsCompetition').value=current;
  if(!sportsCompetitions.some(x=>String(x.id)===String(sportsLeague))){sportsLeague='';sportsSeason=''}
  $('#sportsProvider').textContent=d.provider||'مصدر البيانات';
- if(d.completeCatalog===false)$('#sportsNote').textContent='المصدر المجاني يعرض بطولات محدودة. لإظهار كل الدوريات والأندية والنتائج الحية يلزم ربط مزوّد ذي تغطية أوسع ومراجعة إذن نشر بياناته وشعاراته.';
  return d;
 }
 async function loadSports(){
@@ -174,7 +173,6 @@ async function loadSports(){
   $('#sportsStatus').textContent=d.message||(!d.fixtures?.length?'لا توجد بيانات مباريات متاحة لهذا العرض من المصدر الحالي.':'');
   $('#sportsCount').textContent=(d.fixtures||[]).length+' مباراة';
   $('#sportsUpdated').textContent=d.updatedAt?'آخر تحديث '+new Date(d.updatedAt).toLocaleTimeString('ar-SA'):'';
-  if(d.liveAvailable===false&&sportsView==='live')$('#sportsNote').textContent='مصدر TheSportsDB المجاني لا يوفّر خدمة النتائج المباشرة السريعة. اعرض المواعيد والنتائج السابقة؛ تفعيل النتائج الحية الشاملة يحتاج مزوّدًا آخر واتفاقًا يسمح بنشر البيانات.';
  }catch(e){$('#sportsStatus').textContent=e.message||'تعذر تحميل البيانات الرياضية حالياً.';$('#sportsResults').innerHTML='';}
 }
 function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
