@@ -17,8 +17,8 @@ function renderSportsControls(){
 }
 function sportsWhen(x){
  const date=x.date?x.date.split('-').reverse().join('/'): 'التاريخ غير متوفر';
- const time=x.time&&/^\d{2}:\d{2}/.test(x.time)?' · '+x.time.slice(0,5):'';
- return date+time;
+ const time=x.time?(x.time.includes('T')?x.time.split('T')[1].slice(0,5):x.time.slice(0,5)):'';
+ return date+(time&&time!=='00:00'?' · '+time:'');
 }
 function renderSportsEvents(items){
  if(!items.length)return '<div class="sports-empty">المصدر لم يرجع مباريات لهذا العرض حالياً.</div>';
@@ -42,7 +42,7 @@ async function loadSports(){
   const d=await api('/api/sports?'+params.toString());
   $('#sportsUpdated').textContent='الموسم '+(d.season||'')+(d.updatedAt?' · '+new Date(d.updatedAt).toLocaleTimeString('ar-SA'):'');
   if(sportsView==='table'){$('#sportsStatus').textContent=d.message||'';$('#sportsResults').innerHTML=renderSportsTable(d.table||[]);}
-  else{$('#sportsStatus').textContent=(d.events||[]).length?'':'لا توجد بيانات مباريات لهذا الاختيار.';$('#sportsResults').innerHTML=renderSportsEvents(d.events||[]);}
+  else{$('#sportsStatus').textContent='';$('#sportsResults').innerHTML=renderSportsEvents(d.events||[]);}
  }catch(e){$('#sportsStatus').textContent=e.message||'تعذر جلب بيانات الرياضة حالياً.';$('#sportsResults').innerHTML='';}
 }
 function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
