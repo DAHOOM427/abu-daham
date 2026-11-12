@@ -98,7 +98,8 @@ function renderSportsTable(rows){
 }
 function sportsDateTime(x){
  const raw=x.date||'';if(!raw)return 'الموعد غير متوفر';
- const d=new Date(raw);if(!Number.isNaN(d.getTime()))return d.toLocaleString('ar-SA',{timeZone:'Asia/Riyadh',weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+ const dateTime=raw.includes('T')?raw:(x.time?raw+'T'+x.time.slice(0,8):raw);
+ const d=new Date(dateTime);if(!Number.isNaN(d.getTime()))return d.toLocaleString('ar-SA',{timeZone:'Asia/Riyadh',weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
  return raw+(x.time?' · '+x.time.slice(0,5):'');
 }
 function sportsStatus(x){
