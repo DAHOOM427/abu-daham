@@ -198,7 +198,7 @@ async function fallbackHandler(req,res,action){
  if(!selected)return json(res,400,{error:"البطولة غير متاحة في المصدر المجاني."});
  const view=String(q.view||"today");
  if(view==="live")return json(res,200,{provider:"TheSportsDB free",view,fixtures:[],liveAvailable:false,message:"البث المباشر للنتائج يحتاج مزودًا يدعم live scores. النسخة المجانية الحالية توفر المواعيد والنتائج السابقة."});
- if(view==="table"){
+ if(action==="standings"||view==="table"||view==="standings"){
   const d=await tsd("/lookuptable.php",{l:selected.providerId,s:String(q.season||selected.season)},3600000);
   return json(res,200,{provider:"TheSportsDB free",table:(d.table||[]).map(mapTsdStanding),season:q.season||selected.season,liveAvailable:false});
  }
@@ -215,15 +215,11 @@ export default async function handler(req,res){
  if(req.method!=="GET")return json(res,405,{error:"Method not allowed"});
  if(!valid(req))return json(res,401,{error:"يلزم تسجيل الدخول أولاً."});
  const q=req.query||{};
- const action=String(q.action||"");
- if(!action){
-  const view=String(q.view||"next");
-  req.query={...q,action:view==="table"?"standings":"matches",view:view==="next"?"next":view==="recent"?"recent":view};
- }
- const resolvedAction=String(req.query.action||action);
+ const view=String(q.view||"next");
+ const action=String(q.action||(view==="table"||view==="standings"?"standings":"matches"));
  try{
-  if(FOOTBALL_KEY)return await footballHandler(req,res,resolvedAction);
-  return await fallbackHandler(req,res,resolvedAction);
+  if(FOOTBALL_KEY)return await footballHandler(req,res,action);
+  return await fallbackHandler(req,res,action);
  }catch(error){
   const message=error?.message==="API_FOOTBALL_KEY is not configured"?"":"تعذر جلب بيانات الرياضة حالياً. تحقق من مفتاح المصدر أو حاول لاحقاً.";
   return json(res,502,{error:message||"تعذر جلب بيانات الرياضة حالياً. تحقق من إعدادات مزوّد النتائج.",provider:FOOTBALL_KEY?"API-Football":"TheSportsDB free"});
