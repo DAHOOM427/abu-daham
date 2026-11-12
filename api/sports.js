@@ -23,13 +23,18 @@ async function get(path){
   if(!response.ok)throw new Error("Sports provider returned "+response.status);
   return response.json();
 }
+function scoreValue(value){
+  if(value===null||value===undefined||value==="")return null;
+  const number=Number(value);
+  return Number.isFinite(number)?number:null;
+}
 function mapEvent(x){
   return {
     id:String(x.idEvent||""),
     home:String(x.strHomeTeam||""),
     away:String(x.strAwayTeam||""),
-    homeScore:x.intHomeScore==null?null:Number(x.intHomeScore),
-    awayScore:x.intAwayScore==null?null:Number(x.intAwayScore),
+    homeScore:scoreValue(x.intHomeScore),
+    awayScore:scoreValue(x.intAwayScore),
     date:String(x.dateEvent||""),
     time:String(x.strTime||x.strTimestamp||""),
     status:String(x.strStatus||x.strProgress||""),
