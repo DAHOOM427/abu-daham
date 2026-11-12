@@ -74,7 +74,7 @@ export default async function handler(req,res){
       return json(res,200,{
         league:league.name,view,season,
         table:rows.map(mapStanding).filter(x=>x.team)
-      },{"Cache-Control":"public, s-maxage=900, stale-while-revalidate=3600"});
+      });
     }
     const rows=Array.isArray(data.events)?data.events:[];
     return json(res,200,{
@@ -82,7 +82,7 @@ export default async function handler(req,res){
       events:rows.map(mapEvent).filter(x=>x.home&&x.away),
       source:"TheSportsDB",
       updatedAt:new Date().toISOString()
-    },{"Cache-Control":"public, s-maxage=600, stale-while-revalidate=1800"});
+    });
   }catch(error){
     return json(res,502,{error:"تعذر جلب بيانات الرياضة حالياً. جرّب التحديث بعد قليل."});
   }
