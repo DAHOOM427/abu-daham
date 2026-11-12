@@ -104,7 +104,7 @@ function sportsDateTime(x){
 }
 function sportsStatus(x){
  const code=String(x.status||'').toUpperCase();
- const labels={NS:'لم تبدأ',TBD:'موعد غير محدد',1H:'الشوط الأول',HT:'استراحة',2H:'الشوط الثاني',ET:'وقت إضافي',P:'ركلات ترجيح',FT:'انتهت',AET:'انتهت بعد التمديد',PEN:'انتهت بركلات الترجيح',PST:'مؤجلة',CANC:'أُلغيت',ABD:'توقفت',SUSP:'متوقفة',INT:'متقطعة',BT:'استراحة إضافية',LIVE:'مباشرة'};
+ const labels={NS:'لم تبدأ',TBD:'موعد غير محدد','1H':'الشوط الأول',HT:'استراحة','2H':'الشوط الثاني',ET:'وقت إضافي',P:'ركلات ترجيح',FT:'انتهت',AET:'انتهت بعد التمديد',PEN:'انتهت بركلات الترجيح',PST:'مؤجلة',CANC:'أُلغيت',ABD:'توقفت',SUSP:'متوقفة',INT:'متقطعة',BT:'استراحة إضافية',LIVE:'مباشرة'};
  return labels[code]||x.statusLong||x.status||'موعد المباراة';
 }
 function renderSportsMatches(items){
