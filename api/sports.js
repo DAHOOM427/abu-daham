@@ -120,12 +120,17 @@ function mapTeam(row){
 async function footballHandler(req,res,action){
  const q=req.query||{};
  const league=String(q.league||"");
+ const selectedStatic=FALLBACK_COMPETITIONS.find(x=>x.id===league||x.providerId===league);
+ if(selectedStatic&&selectedStatic.sport!=="Soccer")return fallbackHandler(req,res,action);
  const season=seasonYear(q.season);
  if(action==="competitions"){
   const params={current:q.all==="1"?"false":"true",search:String(q.search||"").trim().slice(0,80),country:String(q.country||"").trim()};
   if(!params.search)delete params.search;
   const d=await football("/leagues",params,3600000);
-  return json(res,200,{provider:"API-Football",completeCatalog:true,competitions:(d.response||[]).map(mapCompetition),updatedAt:new Date().toISOString()});
+  const competitions=(d.response||[]).map(mapCompetition);
+  const includeBasketball=!params.search||/basket|nba|كرة/i.test(params.search);
+  if(includeBasketball)competitions.push(...FALLBACK_COMPETITIONS.filter(x=>x.sport==="Basketball"));
+  return json(res,200,{provider:"API-Football",completeCatalog:true,competitions,updatedAt:new Date().toISOString()});
  }
  if(action==="matches"){
   const view=String(q.view||"today");
