@@ -168,7 +168,7 @@ async function footballHandler(req,res,action){
 }
 function mapTsdEvent(x){
  const utcValue=String(x.strTimestamp||"").trim();
- const iso=utcValue?(utcValue+(utcValue.endsWith("Z")||/[+-]\\d{2}:?\\d{2}$/.test(utcValue)?"":"Z")):(String(x.dateEvent||"")+(x.strTime?"T"+String(x.strTime).slice(0,8)+"Z":"T00:00:00Z"));
+ const iso=utcValue?(utcValue+(utcValue.endsWith("Z")||/[+-]\d{2}:?\d{2}$/.test(utcValue)?"":"Z")):(String(x.dateEvent||"")+(x.strTime?"T"+String(x.strTime).slice(0,8)+"Z":"T00:00:00Z"));
  const dt=new Date(iso);
  const isValid=!Number.isNaN(dt.getTime());
  const riyadhDate=isValid?new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Riyadh",year:"numeric",month:"2-digit",day:"2-digit"}).format(dt):String(x.dateEvent||"");
