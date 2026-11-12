@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/auth.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/unlock.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/logout.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/catalog.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/api/auth/?$",
+      "dest": "/api/auth.js"
+    },
+    {
+      "src": "^/api/unlock/?$",
+      "dest": "/api/unlock.js"
+    },
+    {
+      "src": "^/api/logout/?$",
+      "dest": "/api/logout.js"
+    },
+    {
+      "src": "^/api/catalog/?$",
+      "dest": "/api/catalog.js"
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}
