@@ -167,8 +167,13 @@ async function footballHandler(req,res,action){
  return json(res,400,{error:"طلب رياضي غير معروف."});
 }
 function mapTsdEvent(x){
+ const utcValue=String(x.strTimestamp||"").trim();
+ const iso=utcValue?(utcValue+(utcValue.endsWith("Z")||/[+-]\\d{2}:?\\d{2}$/.test(utcValue)?"":"Z")):(String(x.dateEvent||"")+(x.strTime?"T"+String(x.strTime).slice(0,8)+"Z":"T00:00:00Z"));
+ const dt=new Date(iso);
+ const isValid=!Number.isNaN(dt.getTime());
+ const riyadhDate=isValid?new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Riyadh",year:"numeric",month:"2-digit",day:"2-digit"}).format(dt):String(x.dateEvent||"");
  return {
-  id:String(x.idEvent||""),date:String(x.dateEvent||""),time:String(x.strTime||""),
+  id:String(x.idEvent||""),date:riyadhDate,time:String(x.strTime||""),timestamp:isValid?dt.toISOString():"",
   status:String(x.strStatus||x.strProgress||""),elapsed:null,
   home:{id:String(x.idHomeTeam||""),name:String(x.strHomeTeam||""),nameAr:toArabicClub(x.strHomeTeam),logo:String(x.strHomeTeamBadge||"")},
   away:{id:String(x.idAwayTeam||""),name:String(x.strAwayTeam||""),nameAr:toArabicClub(x.strAwayTeam),logo:String(x.strAwayTeamBadge||"")},
