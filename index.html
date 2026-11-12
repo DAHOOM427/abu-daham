@@ -17,7 +17,7 @@ function renderSportsControls(){
 }
 function sportsWhen(x){
  const date=x.date?x.date.split('-').reverse().join('/'): 'التاريخ غير متوفر';
- const time=x.time&&/^\\d{2}:\\d{2}/.test(x.time)?' · '+x.time.slice(0,5):'';
+ const time=x.time&&/^\d{2}:\d{2}/.test(x.time)?' · '+x.time.slice(0,5):'';
  return date+time;
 }
 function renderSportsEvents(items){
