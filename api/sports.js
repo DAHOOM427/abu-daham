@@ -173,7 +173,7 @@ function mapTsdEvent(x){
   home:{id:String(x.idHomeTeam||""),name:String(x.strHomeTeam||""),nameAr:toArabicClub(x.strHomeTeam),logo:String(x.strHomeTeamBadge||"")},
   away:{id:String(x.idAwayTeam||""),name:String(x.strAwayTeam||""),nameAr:toArabicClub(x.strAwayTeam),logo:String(x.strAwayTeamBadge||"")},
   homeScore:x.intHomeScore==null?null:Number(x.intHomeScore),awayScore:x.intAwayScore==null?null:Number(x.intAwayScore),
-  league:{name:String(x.strLeague||""),nameAr:toArabicCompetition(x.strLeague),logo:String(x.strLeagueBadge||"")},
+  league:{id:String(x.idLeague||""),name:String(x.strLeague||""),nameAr:toArabicCompetition(x.strLeague),logo:String(x.strLeagueBadge||"")},
   venue:String(x.strVenue||"")
  };
 }
@@ -203,7 +203,25 @@ async function fallbackHandler(req,res,action){
  }
  if(!selected)return json(res,400,{error:"البطولة غير متاحة في المصدر المجاني."});
  const view=String(q.view||"today");
- if(view==="live")return json(res,200,{provider:"TheSportsDB free",view,fixtures:[],liveAvailable:false,message:"البث المباشر للنتائج يحتاج مزودًا يدعم live scores. النسخة المجانية الحالية توفر المواعيد والنتائج السابقة."});
+ if(q.team&&action==="matches"){
+  const endpoint=view==="recent"||view==="results"?"eventslast.php":"eventsnext.php";
+  const d=await tsd("/"+endpoint,{id:String(q.team)},900000);
+  return json(res,200,{provider:"TheSportsDB free",view,fixtures:(d.results||d.events||[]).map(mapTsdEvent),liveAvailable:false});
+ }
+ if(view==="live")return json(res,200,{provider:"TheSportsDB free",view,fixtures:[],liveAvailable:false,message:"المصدر المجاني لا يقدم لوحة نتائج مباشرة سريعة. تظهر المواعيد والنتائج السابقة؛ تفعيل النتائج الحية الشاملة يحتاج مزودًا آخر."});
+ if(!q.league&&action==="matches"){
+  if(view==="standings")return json(res,400,{error:"اختر بطولة لعرض جدول الترتيب."});
+  const choices=FALLBACK_COMPETITIONS.filter(x=>["spl","epl","laliga","seriea","bundesliga","ucl","afc_elite","nba"].includes(x.id));
+  const endpoint=view==="recent"||view==="results"?"eventspastleague.php":"eventsnextleague.php";
+  const results=await Promise.allSettled(choices.map(x=>tsd("/"+endpoint,{id:x.providerId},view==="recent"||view==="results"?900000:3600000)));
+  let fixtures=[];
+  results.forEach((r,i)=>{if(r.status==="fulfilled")fixtures.push(...(r.value.events||[]).map(x=>({...mapTsdEvent(x),league:{id:String(x.idLeague||choices[i].providerId),name:choices[i].name,nameAr:choices[i].nameAr,logo:x.strLeagueBadge||choices[i].logo,country:choices[i].country}})))});
+  if(view==="today"||view==="tomorrow"){
+   const target=todayInRiyadh(view==="tomorrow"?1:0);
+   fixtures=fixtures.filter(x=>!x.date||x.date===target);
+  }
+  return json(res,200,{provider:"TheSportsDB free",view,fixtures,liveAvailable:false,updatedAt:new Date().toISOString(),message:"نتائج المصدر المجاني محدودة بعدد البطولات واللقاءات المتاحة."});
+ }
  if(action==="standings"||view==="table"||view==="standings"){
   const d=await tsd("/lookuptable.php",{l:selected.providerId,s:String(q.season||selected.season)},3600000);
   return json(res,200,{provider:"TheSportsDB free",table:(d.table||[]).map(mapTsdStanding),season:q.season||selected.season,liveAvailable:false});
