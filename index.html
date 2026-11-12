@@ -152,7 +152,7 @@
  <div class="sports-note" id="sportsNote">المواعيد والفرق من مزود بيانات رياضي مستقل، وقد لا تشمل كل المباريات. شعارات الأندية للتمييز بين الفرق ولا تعني شراكة أو حقوق بث. لا تتوفر النتائج الحية الشاملة مع المصدر المجاني الحالي؛ يحتاج ذلك ربط مزود نتائج. لن تُعرض بثوث مباريات داخل أبو داحم إلا إذا أذن صاحب الحقوق بتضمينها. الموقع لا يعرض إعلانات خاصة به، وقد تظهر إعلانات لدى القنوات الخارجية.</div>
 </section>
 <section id="kick" class="kick hidden"><h2>مشاهدة قناة Kick</h2><input id="kickname" placeholder="اسم القناة بدون @"><button id="kickbtn" class="primary">عرض البث</button><div id="frame" class="frame hidden"><iframe id="player" allowfullscreen title="Kick stream"></iframe></div></section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
-const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='live',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='';
+const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='live',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='',sportsOnlyAhli=false,sportsCurrentMatch=null;
 const clubArabic={'Al Hilal':'الهلال','Al-Hilal':'الهلال','Al Nassr':'النصر','Al-Nassr':'النصر','Al Ahli':'الأهلي','Al-Ahli':'الأهلي','Al Ittihad':'الاتحاد','Al-Ittihad':'الاتحاد','Al Shabab':'الشباب','Al-Shabab':'الشباب','Real Madrid':'ريال مدريد','Barcelona':'برشلونة','Atletico Madrid':'أتلتيكو مدريد','Manchester City':'مانشستر سيتي','Manchester United':'مانشستر يونايتد','Liverpool':'ليفربول','Arsenal':'آرسنال','Chelsea':'تشيلسي','Tottenham':'توتنهام','Bayern Munich':'بايرن ميونخ','Borussia Dortmund':'بوروسيا دورتموند','Inter':'إنتر ميلان','AC Milan':'ميلان','Juventus':'يوفنتوس','Paris Saint-Germain':'باريس سان جيرمان','PSG':'باريس سان جيرمان','Napoli':'نابولي','Roma':'روما','Al Qadsiah':'القادسية','Al Ettifaq':'الاتفاق','Al Taawoun':'التعاون'};
 const sportViewTitles={live:['المباريات المباشرة','المباريات التي يجري تحديث بياناتها'],today:['مباريات اليوم','جدول مباريات اليوم بتوقيت السعودية'],tomorrow:['مباريات الغد','المواعيد القادمة بتوقيت السعودية'],results:['النتائج','المباريات والنتائج المسجلة'],standings:['ترتيب البطولات','جدول النقاط والأهداف'],competitions:['البطولات والكؤوس','الدوريات المحلية والقارية والعالمية'],teams:['الأندية والمنتخبات','ابحث عن النادي أو اعرض فرق البطولة']};
 function sportsArabic(name,kind='team'){const n=String(name||'');if(kind==='league')return ({'Saudi Pro League':'دوري روشن السعودي','English Premier League':'الدوري الإنجليزي الممتاز','Premier League':'الدوري الإنجليزي الممتاز','Spanish La Liga':'الدوري الإسباني','La Liga':'الدوري الإسباني','Italian Serie A':'الدوري الإيطالي','Serie A':'الدوري الإيطالي','German Bundesliga':'الدوري الألماني','Bundesliga':'الدوري الألماني','UEFA Champions League':'دوري أبطال أوروبا','FIFA World Cup':'كأس العالم','FIFA Club World Cup':'كأس العالم للأندية','AFC Champions League Elite':'دوري أبطال آسيا للنخبة','NBA':'دوري كرة السلة الأمريكي'}[n]||n);return clubArabic[n]||n}
@@ -182,22 +182,74 @@ function sportsStatus(x){
  const labels={NS:'لم تبدأ',TBD:'موعد غير محدد','1H':'الشوط الأول',HT:'استراحة','2H':'الشوط الثاني',ET:'وقت إضافي',P:'ركلات ترجيح',FT:'انتهت',AET:'انتهت بعد التمديد',PEN:'انتهت بركلات الترجيح',PST:'مؤجلة',CANC:'أُلغيت',ABD:'توقفت',SUSP:'متوقفة',INT:'متقطعة',BT:'استراحة إضافية',LIVE:'مباشرة'};
  return labels[code]||x.statusLong||x.status||'موعد المباراة';
 }
+function sportsIsLive(x){return ['1H','HT','2H','ET','P','LIVE','BT'].includes(String(x.status||'').toUpperCase())}
+function sportsIsAhli(x){return [x.home?.name,x.away?.name,x.home?.nameAr,x.away?.nameAr].some(n=>/(الأهلي|al[\s-]?ahli)/i.test(String(n||'')))}
 function renderSportsMatches(items){
- if(!items.length)return '<div class="sports-empty">لا توجد مباريات مسجلة لهذا الاختيار. جرّب بطولة أخرى أو تاريخًا مختلفًا.</div>';
+ if(!items.length)return '<div class="sports-empty">لا توجد مباريات متاحة لهذا اليوم أو لهذا التصفية من المصدر الحالي. جرّب اختيار بطولة ثانية أو افتح تبويب «بكرة».</div>';
  const groups=new Map();
- for(const x of items){const k=(x.league?.id||x.league?.name||'other');if(!groups.has(k))groups.set(k,{league:x.league||{},items:[]});groups.get(k).items.push(x)}
+ for(const x of items){const k=x.league?.id||x.league?.name||'other';if(!groups.has(k))groups.set(k,{league:x.league||{},items:[]});groups.get(k).items.push(x)}
  return Array.from(groups.values()).map(g=>{
-  const l=g.league||{};return '<div class="sports-day-heading">'+(l.logo?'<img src="'+sportsEscape(l.logo)+'" alt="">':'<span class="sports-no-logo" style="width:27px;height:27px">⚽</span>')+'<span><strong>'+sportsEscape(l.nameAr||sportsArabic(l.name,'league')||'مباريات')+'</strong><small>'+sportsEscape(l.name||'')+(l.country?' · '+sportsEscape(l.country):'')+'</small></span></div><div class="sports-match-list">'+g.items.map(x=>{
-   const home=x.home||{},away=x.away||{},live=['1H','HT','2H','ET','P','LIVE','BT'].includes(String(x.status||'').toUpperCase());
-   const hasScore=x.homeScore!==null&&x.homeScore!==undefined&&x.awayScore!==null&&x.awayScore!==undefined;
-   const score=hasScore?x.homeScore+' - '+x.awayScore:'—';
-   const status=sportsStatus(x);
-   return '<article class="sports-match-row"><div class="sports-match-time">'+(live?'<span class="live">● مباشر</span>':'')+'<div>'+sportsEscape(sportsDateTime(x))+'</div></div><div class="sports-team-cell"><img class="sports-team-logo" loading="lazy" src="'+sportsEscape(home.logo||'')+'" alt=""><span class="sports-team-name">'+sportsEscape(home.nameAr||sportsArabic(home.name))+'<small>'+sportsEscape(home.name||'')+'</small></span></div><div class="sports-score-box '+(live?'is-live':'')+'">'+sportsEscape(score)+'<small>'+(x.elapsed!=null?sportsEscape(x.elapsed)+'′ ':'')+sportsEscape(status)+'</small></div><div class="sports-team-cell away"><img class="sports-team-logo" loading="lazy" src="'+sportsEscape(away.logo||'')+'" alt=""><span class="sports-team-name">'+sportsEscape(away.nameAr||sportsArabic(away.name))+'<small>'+sportsEscape(away.name||'')+'</small></span></div><div class="sports-match-detail">'+sportsEscape(x.venue||'')+'</div></article>';
-  }).join('')+'</div>';
+  const l=g.league||{};
+  const heading='<div class="sports-day-heading">'+(l.logo?'<img loading="lazy" src="'+sportsEscape(l.logo)+'" alt="">':'<span class="sports-no-logo">🏆</span>')+'<span><strong>'+sportsEscape(l.nameAr||sportsArabic(l.name,'league')||'مباريات')+'</strong><small>'+sportsEscape(l.name||'')+(l.country?' · '+sportsEscape(l.country):'')+'</small></span></div>';
+  const matches=g.items.map(x=>{
+   const home=x.home||{},away=x.away||{},live=sportsIsLive(x),hasScore=x.homeScore!=null&&x.awayScore!=null;
+   const score=hasScore?x.homeScore+' : '+x.awayScore:'VS',status=sportsStatus(x);
+   const matchId=sportsEscape(x.id||'');
+   return '<article class="sports-match-row"><div class="sports-match-time">'+(live?'<span class="live">● مباشر</span>':'<span>'+sportsEscape(sportsDateTime(x))+'</span>')+'<div>'+sportsEscape(status)+'</div></div>'+
+    '<div class="sports-team-cell">'+(home.logo?'<img class="sports-team-logo" loading="lazy" src="'+sportsEscape(home.logo)+'" alt="">':'<span class="sports-no-logo">⚽</span>')+'<span class="sports-team-name">'+sportsEscape(home.nameAr||sportsArabic(home.name))+'<small>'+sportsEscape(home.name||'')+'</small></span></div>'+
+    '<div class="sports-score-box '+(live?'is-live':'')+'">'+sportsEscape(score)+'<small>'+(x.elapsed!=null?sportsEscape(x.elapsed)+'′ · ':'')+sportsEscape(status)+'</small></div>'+
+    '<div class="sports-team-cell away">'+(away.logo?'<img class="sports-team-logo" loading="lazy" src="'+sportsEscape(away.logo)+'" alt="">':'<span class="sports-no-logo">⚽</span>')+'<span class="sports-team-name">'+sportsEscape(away.nameAr||sportsArabic(away.name))+'<small>'+sportsEscape(away.name||'')+'</small></span></div>'+
+    '<div class="sports-match-detail"><button type="button" class="sports-card-action" data-watch="'+matchId+'">'+(live?'▶ البث والقنوات':'📺 القناة')+'</button><button type="button" class="sports-card-action secondary" data-lineup="'+matchId+'">👥 اللاعبون</button>'+(x.venue?'<span class="sports-match-venue">'+sportsEscape(x.venue)+'</span>':'')+'</div></article>';
+  }).join('');
+  return heading+'<div class="sports-match-list">'+matches+'</div>';
  }).join('');
 }
+function sportsMatchById(id){
+ const data=sportsLastData?.fixtures||[];
+ return data.find(x=>String(x.id||'')===String(id))||null;
+}
+function sportsWatchContext(x){
+ const panel=$('#sportsWatchPanel'),title=(x?.home?.nameAr||sportsArabic(x?.home?.name)||'الفريق الأول')+' × '+(x?.away?.nameAr||sportsArabic(x?.away?.name)||'الفريق الثاني');
+ sportsCurrentMatch=x;panel.classList.remove('hidden');
+ $('#sportsWatchTitle').textContent=title;$('#sportsRoster').classList.add('hidden');$('#sportsRoster').innerHTML='';
+ $('#sportsPlayerBox').innerHTML='<div class="sports-player-placeholder"><strong>⏳ فحص البث الرسمي</strong>نبحث عن مصدر يجيز تشغيل هذه المباراة داخل أبو داحم...</div>';
+ $('#sportsWatchHint').textContent='الساعة: '+sportsDateTime(x)+' · '+sportsStatus(x)+' · الجودة والإعلانات يحددها المصدر الخارجي.';
+ $('#sportsWatchActions').innerHTML='<button class="sports-pill" data-roster-action="lineup" data-matchid="'+sportsEscape(x.id||'')+'">👥 تشكيلة المباراة</button>'+
+ (x.home?.id?'<button class="sports-pill" data-roster-action="players" data-teamid="'+sportsEscape(x.home.id)+'">قائمة '+sportsEscape(x.home.nameAr||sportsArabic(x.home.name))+'</button>':'')+
+ (x.away?.id?'<button class="sports-pill" data-roster-action="players" data-teamid="'+sportsEscape(x.away.id)+'">قائمة '+sportsEscape(x.away.nameAr||sportsArabic(x.away.name))+'</button>':'');
+ panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function sportsOpenWatch(x){
+ sportsWatchContext(x);
+ const activeMatch=x;
+ try{
+  const qp=new URLSearchParams({action:'stream',id:String(x.id||''),league:String(x.league?.id||x.league?.name||'')});
+  const d=await api('/api/sports-detail?'+qp.toString());
+  if(sportsCurrentMatch!==activeMatch)return;
+  if(d.stream?.embedUrl){
+    const iframe=document.createElement('iframe');iframe.src=d.stream.embedUrl;iframe.title=d.stream.title||'البث الرسمي';iframe.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';iframe.setAttribute('allowfullscreen','');iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');
+    $('#sportsPlayerBox').replaceChildren(iframe);$('#sportsWatchHint').textContent='البث من '+(d.stream.source||'مصدر مرخّص')+' · الجودة حسب المصدر. إذا ظهرت إعلانات فهي من مزود البث.';
+  }else{$('#sportsPlayerBox').innerHTML='<div class="sports-player-placeholder"><strong>📺 البث داخل الموقع غير متاح لهذه المباراة</strong>حقوق البث لا تسمح لنا بتشغيل قناة المباراة هنا من دون إذن صاحب الحقوق. تقدر تفتح الناقل الرسمي عند توفره.<div class="sports-label" style="margin:14px auto 0;width:max-content">لا روابط مجهولة • لا بث مقرصن</div></div>'}
+  if(d.official){
+   const a=document.createElement('a');a.className='sports-pill primary-pill';a.href=d.official.url;a.target='_blank';a.rel='noopener';a.textContent='افتح '+d.official.title+' ↗';$('#sportsWatchActions').prepend(a);
+  }
+ }catch(e){if(sportsCurrentMatch===activeMatch)$('#sportsPlayerBox').innerHTML='<div class="sports-player-placeholder"><strong>تعذر التحقق من البث</strong>'+sportsEscape(e.message)+'</div>'}
+}
+function sportsRenderPlayers(groups,source){
+ const root=$('#sportsRoster');root.classList.remove('hidden');
+ if(!groups?.some(g=>g.players?.length)){
+   root.innerHTML='<h4>👥 معلومات اللاعبين</h4><div class="sports-roster-note">لم يُعلن المصدر أسماء اللاعبين أو التشكيلة حتى الآن. لا نعرض تشكيلة متوقعة على أنها مؤكدة.</div>';return;
+ }
+ root.innerHTML='<h4>👥 اللاعبون من المصدر الرياضي</h4><div class="sports-roster-note">المصدر: '+sportsEscape(source||'مزود البيانات')+' · المعلومات قد تكون محدودة. التشكيلة ليست مؤكدة إلا إذا أعلنها المصدر.</div>'+groups.map(g=>'<section><h5>'+sportsEscape(g.team||'الفريق')+(g.formation?' · '+sportsEscape(g.formation):'')+' · '+(g.players||[]).length+' لاعبين</h5><div class="sports-roster-grid">'+(g.players||[]).map(p=>'<div class="sports-player-card">'+(p.photo?'<img loading="lazy" src="'+sportsEscape(p.photo)+'" alt="">':'<span class="sports-no-logo">👤</span>')+'<span><strong>'+sportsEscape(p.number?('#'+p.number+' · '+p.name):p.name)+'</strong><small>'+sportsEscape(p.position||'المنصب غير محدد')+'</small></span></div>').join('')+'</div></section>').join('');
+}
+async function sportsOpenRoster(action,id){
+ const root=$('#sportsRoster');root.classList.remove('hidden');root.innerHTML='<h4>👥 جارٍ تحميل أسماء اللاعبين...</h4>';
+ try{const params=new URLSearchParams({action,id});const d=await api('/api/sports-detail?'+params.toString());sportsRenderPlayers(d.groups||[],d.source)}catch(e){root.innerHTML='<h4>تعذّر تحميل اللاعبين</h4><p class="sports-roster-note">'+sportsEscape(e.message||'المصدر غير متاح')+'</p>'}
+}
+
 function renderSportsControls(){
  $('#sportsViews').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.view===sportsView));
+ $('#sportsAhliQuick').classList.toggle('is-active',sportsOnlyAhli);
  const title=sportViewTitles[sportsView]||sportViewTitles.live;
  $('#sportsFeedTitle').textContent=title[0];$('#sportsFeedSubtitle').textContent=title[1];
  $('#sportsCompetition').value=sportsLeague;
@@ -244,9 +296,9 @@ async function loadSports(){
   if(sportsSelectedTeam)params.set('team',sportsSelectedTeam);
   const d=await api('/api/sports?'+params.toString());sportsLastData=d;
   $('#sportsProvider').textContent=d.provider||$('#sportsProvider').textContent;
-  $('#sportsResults').innerHTML=renderSportsMatches(d.fixtures||[]);
-  $('#sportsStatus').textContent=d.message||(!d.fixtures?.length?'لا توجد بيانات مباريات متاحة لهذا العرض من المصدر الحالي.':'');
-  $('#sportsCount').textContent=(d.fixtures||[]).length+' مباراة';
+  const visibleFixtures=(d.fixtures||[]).filter(x=>(!sportsOnlyAhli||sportsIsAhli(x))&&(!search||String([x.home?.name,x.home?.nameAr,x.away?.name,x.away?.nameAr,x.league?.name,x.league?.nameAr].join(' ')).toLowerCase().includes(search.toLowerCase())));$('#sportsResults').innerHTML=renderSportsMatches(visibleFixtures);
+  $('#sportsStatus').textContent=d.message||(!visibleFixtures.length?'لا توجد مباريات مطابقة في نتائج المصدر الحالي. تأكد من البطولة أو غيّر التصفية.':'');
+  $('#sportsCount').textContent=visibleFixtures.length+' مباراة'+(sportsOnlyAhli?' · الأهلي':'');
   $('#sportsUpdated').textContent=d.updatedAt?'آخر تحديث '+new Date(d.updatedAt).toLocaleTimeString('ar-SA'):'';
  }catch(e){$('#sportsStatus').textContent=e.message||'تعذر تحميل البيانات الرياضية حالياً.';$('#sportsResults').innerHTML='';}
 }
@@ -284,6 +336,25 @@ $('#yearFilter').onchange=()=>{page=1;load()};$('#refresh').onclick=()=>load();$
 $('#prevPage').onclick=()=>{if(page>1){page--;load()}};$('#nextPage').onclick=()=>{page++;load()};
 $('#results').addEventListener('click',e=>{const card=e.target.closest('[data-card]');if(card)showDetail(lastItems[Number(card.dataset.card)])});
 $('#detailClose').onclick=()=>$('#detail').classList.add('hidden');$('#detail').addEventListener('click',e=>{if(e.target===$('#detail'))$('#detail').classList.add('hidden')});
+
+$('#sportsSplashPlaceholder')?.remove();
+document.querySelectorAll('[data-shortcut]').forEach(b=>b.addEventListener('click',()=>{
+ const shortcut=b.dataset.shortcut;
+ if(shortcut==='ahli'){sportsOnlyAhli=!sportsOnlyAhli;if(sportsView==='standings'||sportsView==='competitions'||sportsView==='teams')sportsView='today';}
+ else{sportsView=shortcut;sportsOnlyAhli=false;}
+ sportsSelectedTeam='';$('#sportsSearch').value='';loadSports();
+}));
+$('#sportsCloseWatch').onclick=()=>{const p=$('#sportsWatchPanel');p.classList.add('hidden');sportsCurrentMatch=null;$('#sportsPlayerBox').replaceChildren();};
+$('#sportsResults').addEventListener('click',e=>{
+ const watch=e.target.closest('button[data-watch]');
+ if(watch){const x=sportsMatchById(watch.dataset.watch);if(x)sportsOpenWatch(x);return}
+ const lineup=e.target.closest('button[data-lineup]');
+ if(lineup){const x=sportsMatchById(lineup.dataset.lineup);if(x){sportsWatchContext(x);sportsOpenRoster('lineup',x.id)}return}
+});
+$('#sportsWatchActions').addEventListener('click',e=>{
+ const b=e.target.closest('button[data-roster-action]');if(!b)return;
+ sportsOpenRoster(b.dataset.rosterAction,b.dataset.matchid||b.dataset.teamid);
+});
 $('#sportsViews').addEventListener('click',e=>{const b=e.target.closest('button[data-view]');if(!b)return;sportsView=b.dataset.view;sportsSelectedTeam='';loadSports()});
 $('#sportsCompetition').addEventListener('change',e=>{sportsLeague=e.target.value;const opt=e.target.selectedOptions?.[0];sportsSeason=opt?.dataset?.season||'';sportsSelectedTeam='';loadSports()});
 $('#sportsSport').addEventListener('change',e=>{sportsSport=e.target.value;if(sportsView==='competitions')loadSports()});
