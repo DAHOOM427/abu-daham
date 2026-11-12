@@ -57,12 +57,87 @@
 @media(max-width:900px){.sports-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sports-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.sports-search-field{grid-column:span 2}}
 @media(max-width:580px){.sports-hub{padding:13px}.sports-header-side{align-items:flex-start}.sports-tabs{gap:6px}.sports-tabs button{padding:9px 11px;font-size:12px}.sports-filters{grid-template-columns:1fr 1fr}.sports-filter-field{min-width:0}.sports-search-field{grid-column:1/-1}.sports-match-row{grid-template-columns:54px minmax(0,1fr) 55px minmax(0,1fr);gap:6px;padding:11px 7px}.sports-match-detail{display:none}.sports-team-cell{gap:5px}.sports-team-logo{width:23px;height:23px;flex-basis:23px}.sports-team-name{font-size:10px}.sports-team-name small{font-size:8px}.sports-score-box{font-size:15px}.sports-match-time{font-size:10px}.sports-card-grid{grid-template-columns:1fr}.sports-hub-header h2{font-size:24px}}
 @media(max-width:900px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.app{padding:16px}}@media(max-width:580px){.sports-panel{padding:13px}.sports-match-grid{grid-template-columns:1fr}.sports-teams{gap:7px}.sports-teams strong{font-size:12px}.sports-score{font-size:18px}.targets{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-top{display:block}.detail-top img{width:130px;height:195px;margin-bottom:14px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hero{padding:24px 18px}.search{flex-wrap:wrap}.search input{flex-basis:100%}.app{padding:12px}header{padding:0 14px}}
+
+/* Abu Daham sports lounge */
+.sports-hub{background:linear-gradient(155deg,#121d14 0%,#090f0c 54%,#10190e 100%);padding:26px;border:1px solid #3e6031;border-radius:24px;box-shadow:0 20px 65px #0005}
+.sports-hub-header{border-bottom:0;padding:4px 0 18px}.sports-hub-header h2{font-size:clamp(27px,4vw,43px);font-weight:900;letter-spacing:-.8px}
+.sports-kicker{font-size:11px;color:#c7ff73}.sports-provider{background:#1c2c19}
+.sports-splash{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,1fr);gap:14px;margin-bottom:17px}
+.sports-splash-main{position:relative;overflow:hidden;min-height:205px;border-radius:19px;padding:24px;background:radial-gradient(circle at 14% 14%,#375527b8,transparent 53%),linear-gradient(115deg,#20331d,#0b150f);border:1px solid #4d7034}
+.sports-splash-main:after{content:"⚽";position:absolute;left:25px;bottom:-42px;opacity:.07;font-size:208px;pointer-events:none}
+.sports-splash-main h3{font-size:clamp(22px,3.1vw,33px);margin:11px 0 9px;position:relative;z-index:1}
+.sports-splash-main p{max-width:490px;font-size:13px;color:#b3c4af;line-height:1.9;margin:0 0 20px;position:relative;z-index:1}
+.sports-splash-kicker{font-size:11px;color:#d9ffac;font-weight:900;letter-spacing:1px}
+.sports-splash-actions,.sports-quicklinks,.sports-watch-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.sports-pill{border:1px solid #4c6b3b;background:#1b2d18;color:#d4ffac;padding:10px 15px;border-radius:11px;font-size:12px;font-weight:800;text-decoration:none}
+.sports-pill.primary-pill{background:#b8f34b;color:#152508;border-color:#b8f34b}
+.sports-pill.is-active{background:#b8f34b;color:#152508}
+.sports-splash-side{border-radius:19px;border:1px solid #32422c;background:#121b15;padding:19px}
+.sports-splash-side h4{font-size:16px;margin:0 0 12px}
+.sports-splash-side p{color:#a5b5a3;font-size:12px;line-height:1.8;margin:8px 0}
+.sports-broadcaster{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#19261a;border:1px solid #3a5136;border-radius:12px;padding:12px 13px;text-decoration:none;color:#eef6e7;margin:11px 0}
+.sports-broadcaster strong{font-size:13px}.sports-broadcaster small{display:block;color:#a4b59d;font-size:11px;margin-top:5px}
+.sports-broadcaster span:last-child{color:#b8f34b;font-weight:900;font-size:17px}
+.sports-tabs{background:#101b12;border:1px solid #30492c;padding:7px;border-radius:14px;gap:5px;scrollbar-width:thin;margin:13px 0}
+.sports-tabs button{background:transparent;border:0;border-radius:10px;padding:12px 16px}.sports-tabs button.active{background:#b8f34b;color:#16230b;border:0}
+.sports-feed-head{padding:15px 2px 10px}.sports-feed-head strong{font-size:18px}
+.sports-day-heading{background:#172319;border-color:#3c5135;border-radius:15px 15px 0 0;padding:13px 16px}
+.sports-match-list{border-color:#3c5135;border-radius:0 0 15px 15px}
+.sports-match-row{grid-template-columns:98px minmax(0,1fr) 84px minmax(0,1fr) 175px;background:#111b14;padding:17px 14px;gap:11px;transition:background .18s}
+.sports-match-row:hover{background:#1a291b}.sports-team-logo{width:40px;height:40px;flex-basis:40px}.sports-team-name{font-size:13px}
+.sports-score-box{font-size:20px}.sports-score-box small{font-size:10px}.sports-match-time .live{font-size:11px}
+.sports-match-detail{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;line-height:1.3}
+.sports-card-action{padding:9px 11px;background:#b8f34b;border:1px solid #b8f34b;color:#16220b;font-size:11px;font-weight:900;border-radius:9px}
+.sports-card-action.secondary{background:transparent;border-color:#4a6541;color:#d9eac9}
+.sports-match-venue{width:100%;display:block;text-align:center;font-size:10px;color:#a4b39d}
+.sports-watch-panel{margin:17px 0;border:1px solid #4d743d;background:#0a110c;border-radius:20px;padding:19px;box-shadow:0 12px 36px #0005}
+.sports-watch-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:3px 0 15px}
+.sports-watch-top h3{margin:4px 0 0;font-size:21px}.sports-watch-top small{color:#c4ff85}
+.sports-player-box{position:relative;aspect-ratio:16/9;background:radial-gradient(circle at center,#1d3421,#040905);border:1px solid #28442d;border-radius:15px;overflow:hidden;display:grid;place-items:center}
+.sports-player-box iframe{width:100%;height:100%;border:0;position:absolute;inset:0}
+.sports-player-placeholder{text-align:center;color:#c7d8c3;padding:28px;max-width:600px;line-height:1.9}
+.sports-player-placeholder strong{display:block;color:#ecf5e7;font-size:21px;margin-bottom:8px}
+.sports-watch-hint{font-size:12px;color:#a7b6a4;margin:12px 0;line-height:1.8}
+.sports-roster{margin-top:16px;border:1px solid #334a30;border-radius:14px;background:#131d14;padding:15px}
+.sports-roster h4{margin:0 0 9px;font-size:15px}
+.sports-roster-note{font-size:11px;color:#a7b7a2;margin-bottom:11px}
+.sports-roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.sports-player-card{display:flex;align-items:center;gap:9px;border-radius:10px;padding:9px;border:1px solid #344b30;background:#1c291c;min-width:0}
+.sports-player-card img{width:34px;height:34px;object-fit:cover;border-radius:50%;background:#2a3d2b}
+.sports-player-card strong{display:block;font-size:11px;line-height:1.5}
+.sports-player-card small{display:block;color:#a5b5a0;font-size:10px;margin-top:3px}
+.sports-roster h5{margin:13px 0 9px;color:#c8eead}
+.sports-label{padding:5px 8px;border:1px solid #547044;color:#b8f34b;border-radius:7px;font-size:10px}
+.sports-note{color:#acb7a8;border-top:1px solid #294129;padding-top:14px;margin-top:20px}
+@media(max-width:1050px){.sports-splash{grid-template-columns:1fr}.sports-match-row{grid-template-columns:70px minmax(0,1fr) 70px minmax(0,1fr);gap:8px}.sports-match-detail{grid-column:1/-1;justify-content:center}.sports-match-venue{display:none}}
+@media(max-width:650px){.sports-hub{padding:14px;border-radius:17px}.sports-splash-main{padding:19px;min-height:170px}.sports-splash-side{padding:13px}.sports-match-row{grid-template-columns:60px minmax(0,1fr) 60px minmax(0,1fr);padding:12px 8px;gap:4px}.sports-team-cell{flex-direction:column;text-align:center;gap:4px}.sports-team-cell.away{flex-direction:column}.sports-team-name{font-size:11px;text-align:center;white-space:normal;line-height:1.4}.sports-team-name small{font-size:9px}.sports-team-logo{width:33px;height:33px;flex:0 0 33px}.sports-score-box{font-size:17px}.sports-match-time{font-size:10px}.sports-match-detail{padding-top:9px}.sports-watch-panel{padding:12px}.sports-player-placeholder{padding:14px}.sports-player-placeholder strong{font-size:16px}.sports-filters{grid-template-columns:1fr 1fr}.sports-filter-field,.sports-search-field{min-width:0}.sports-search-field{grid-column:1/3}.sports-refresh-button{width:auto}.sports-roster-grid{grid-template-columns:1fr 1fr}}
+
 </style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section class="targets"><div><strong>359,756</strong><small>هدف الأفلام</small></div><div><strong>175,225</strong><small>هدف المسلسلات</small></div><div><strong>41,537</strong><small>هدف الأنمي</small></div><div><strong>576,518</strong><small>إجمالي أهداف الأفلام والمسلسلات والأنمي</small></div><div><strong>50,000</strong><small>هدف القنوات</small></div><p>هذه أهداف قاعدة البيانات وليست أعدادًا تم تحميلها حتى الآن.</p></section><section class="filters" id="filters"><label for="yearFilter">سنة الإصدار</label><select id="yearFilter"><option value="">كل السنوات (1985–2026)</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option></select><label for="qualityFilter">الجودة</label><select id="qualityFilter"><option value="">كل الجودات</option><option value="4K">4K</option><option value="2K">2K / QHD</option><option value="HD">HD</option></select><button id="refresh" class="refresh">تحديث النتائج</button></section><div id="status" class="status">اختر قسماً أو اكتب اسم ما تبحث عنه.</div><section id="results" class="grid"></section><div class="pager"><button id="prevPage" disabled>السابق</button><span id="pageLabel" class="muted">صفحة 1</span><button id="nextPage">التالي</button></div><div id="detail" class="detail-backdrop hidden"><article class="detail-panel"><button id="detailClose" class="detail-close">إغلاق ✕</button><div id="detailBody"></div></article></div><section id="sportsPanel" class="sports-panel sports-hub hidden">
  <div class="sports-hub-header">
   <div><div class="sports-kicker">ABU DAHAM · SPORTS CENTER</div><h2>مركز المباريات والنتائج</h2><p>نتائج ومواعيد وترتيب الأندية والبطولات</p></div>
   <div class="sports-header-side"><span id="sportsProvider" class="sports-provider">مصدر البيانات</span><span id="sportsUpdated" class="sports-updated"></span></div>
  </div>
- <div class="sports-tabs" id="sportsViews">
+ <div class="sports-splash">
+ <div class="sports-splash-main">
+  <div class="sports-splash-kicker">⚽ ملعب أبو داحم · بدون إعلانات من الموقع</div>
+  <h3>المباراة، القناة، واللاعبون في مكان واحد.</h3>
+  <p>المواعيد بتوقيت السعودية، شعارات الأندية حسب البيانات المتاحة، وتفاصيل التشكيلة عندما يعلنها المصدر. البث داخل أبو داحم للمصادر المسموح بتضمينها فقط.</p>
+  <div class="sports-splash-actions"><button class="sports-pill primary-pill" data-shortcut="live">● المباشر</button><button class="sports-pill" data-shortcut="today">📅 مباريات اليوم</button><button class="sports-pill" data-shortcut="tomorrow">بكرة</button><button class="sports-pill" id="sportsAhliQuick" data-shortcut="ahli">💚 الأهلي السعودي</button></div>
+ </div>
+ <div class="sports-splash-side"><h4>📡 القنوات الرسمية</h4>
+  <p>اختر مباراتك لعرض صفحة المشاهدة داخل الموقع. إذا لم يسمح الناقل بالتضمين، نعرض لك رابطه الرسمي.</p>
+  <a class="sports-broadcaster" href="https://app.thmanyah.com/" target="_blank" rel="noopener"><span><strong>ثمانية · الدوري السعودي</strong><small>الناقل الرسمي – بث مجاني بإعلانات حسب الباقة</small></span><span>↗</span></a>
+  <a class="sports-broadcaster" href="https://www.fifa.com/fifaplus" target="_blank" rel="noopener"><span><strong>FIFA+ · مباريات مجانية مختارة</strong><small>المتاح يتغير حسب بلدك وحقوق النقل</small></span><span>↗</span></a>
+ </div>
+</div>
+<div id="sportsWatchPanel" class="sports-watch-panel hidden">
+ <div class="sports-watch-top"><div><small>ABU DAHAM • MATCH CENTER</small><h3 id="sportsWatchTitle">المشاهدة</h3></div><button class="sports-pill" type="button" id="sportsCloseWatch">✕ إغلاق</button></div>
+ <div class="sports-player-box" id="sportsPlayerBox"><div class="sports-player-placeholder"><strong>📺 تشغيل المباراة</strong>اختر مباراة من الأسفل لعرض القناة الرسمية المتاحة.</div></div>
+ <p class="sports-watch-hint" id="sportsWatchHint">الجودة تعتمد على الناقل والمصدر، ولا يمكن تغيير جودة بث خارجي لا نتحكم فيه.</p>
+ <div class="sports-watch-actions" id="sportsWatchActions"></div>
+ <div id="sportsRoster" class="sports-roster hidden"></div>
+</div>
+<div class="sports-tabs" id="sportsViews">
   <button data-view="live" class="active"><span class="sports-live-dot"></span> مباشر</button>
   <button data-view="today">اليوم</button><button data-view="tomorrow">غدًا</button><button data-view="results">النتائج</button><button data-view="standings">الترتيب</button><button data-view="competitions">البطولات</button><button data-view="teams">الأندية</button>
  </div>
@@ -74,7 +149,7 @@
  </div>
  <div class="sports-feed-head"><div><strong id="sportsFeedTitle">المباريات المباشرة</strong><small id="sportsFeedSubtitle">حسب البيانات المتاحة من المزوّد</small></div><span id="sportsCount" class="sports-count"></span></div>
  <div id="sportsStatus" class="sports-empty">جاري تحميل البطولات...</div><div id="sportsResults"></div>
- <div class="sports-note" id="sportsNote">البيانات المجانية الحالية محدودة. لتوسيع الدوريات والفرق وتفعيل استعلامات النتائج الحية، اربط مفتاح API-Football المجاني في Vercel باسم <code>API_FOOTBALL_KEY</code>. الخطة المجانية تعطي 100 طلب يوميًا؛ راجع <a href="https://www.api-football.com/pricing" target="_blank" rel="noopener">الخطط</a> و<a href="https://www.api-football.com/terms" target="_blank" rel="noopener">شروط الاستخدام</a>. هذا المفتاح لا يمنح حقوق شعارات الأندية أو حقوق البطولات تلقائيًا، ولا يوفّر حقوق بث فيديو المباريات.</div>
+ <div class="sports-note" id="sportsNote">المواعيد والفرق من مزود بيانات رياضي مستقل، وقد لا تشمل كل المباريات. شعارات الأندية للتمييز بين الفرق ولا تعني شراكة أو حقوق بث. لا تتوفر النتائج الحية الشاملة مع المصدر المجاني الحالي؛ يحتاج ذلك ربط مزود نتائج. لن تُعرض بثوث مباريات داخل أبو داحم إلا إذا أذن صاحب الحقوق بتضمينها. الموقع لا يعرض إعلانات خاصة به، وقد تظهر إعلانات لدى القنوات الخارجية.</div>
 </section>
 <section id="kick" class="kick hidden"><h2>مشاهدة قناة Kick</h2><input id="kickname" placeholder="اسم القناة بدون @"><button id="kickbtn" class="primary">عرض البث</button><div id="frame" class="frame hidden"><iframe id="player" allowfullscreen title="Kick stream"></iframe></div></section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
 const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='live',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='';
