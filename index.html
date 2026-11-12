@@ -223,7 +223,7 @@ async function sportsOpenWatch(x){
  sportsWatchContext(x);
  const activeMatch=x;
  try{
-  const qp=new URLSearchParams({action:'stream',id:String(x.id||''),league:String(x.league?.id||x.league?.name||'')});
+  const qp=new URLSearchParams({action:'stream',id:String(x.id||''),league:String(x.league?.id||''),leagueName:String(x.league?.name||'')});
   const d=await api('/api/sports-detail?'+qp.toString());
   if(sportsCurrentMatch!==activeMatch)return;
   if(d.stream?.embedUrl){
@@ -233,6 +233,7 @@ async function sportsOpenWatch(x){
   if(d.official){
    const a=document.createElement('a');a.className='sports-pill primary-pill';a.href=d.official.url;a.target='_blank';a.rel='noopener';a.textContent='افتح '+d.official.title+' ↗';$('#sportsWatchActions').prepend(a);
   }
+  if(d.channels?.length){const info=document.createElement('div');info.className='sports-watch-hint';info.textContent='قنوات مذكورة في قاعدة البيانات (ليست روابط بث): '+d.channels.map(x=>x.name).join('، ');$('#sportsWatchActions').append(info)}
  }catch(e){if(sportsCurrentMatch===activeMatch)$('#sportsPlayerBox').innerHTML='<div class="sports-player-placeholder"><strong>تعذر التحقق من البث</strong>'+sportsEscape(e.message)+'</div>'}
 }
 function sportsRenderPlayers(groups,source){
