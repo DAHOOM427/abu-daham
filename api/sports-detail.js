@@ -42,10 +42,16 @@ export default async function handler(req,res){
  if(!valid(req))return json(res,401,{error:"يلزم تسجيل الدخول."});
  const action=String(req.query?.action||"stream");
  const id=safeId(req.query?.id);
- const league=clean(req.query?.league);
+ const league=clean(req.query?.league)+' '+clean(req.query?.leagueName);
  if(action==="stream"){
   const playable=id?licensedStream(id):null;
-  return json(res,200,{stream:playable,official:officialPage(league),message:playable?"تشغيل مصرح داخل الموقع":"لا يتوفر رابط بث مصرح بتضمينه لهذه المباراة حتى الآن. استخدم المصدر الرسمي إن توفر."});
+  let channels=[];
+  if(id)try{
+   const d=await cached("tv:"+id,()=>remote(SPORTSDB+"/lookuptv.php?id="+id));
+   const rows=d.tvevents||d.tv||d.tvlist||[];
+   channels=rows.slice(0,8).map(x=>({name:clean(x.strChannel||x.strTV||x.strTVName||x.strNetwork),country:clean(x.strCountry)})).filter(x=>x.name);
+  }catch{}
+  return json(res,200,{stream:playable,official:officialPage(league),channels,message:playable?"تشغيل مصرح داخل الموقع":"لا يتوفر رابط بث مصرح بتضمينه لهذه المباراة حتى الآن. استخدم المصدر الرسمي إن توفر."});
  }
  if(!id)return json(res,400,{error:"رقم المباراة أو النادي غير صالح."});
  try{
