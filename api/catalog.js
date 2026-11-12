@@ -3,6 +3,17 @@ import {valid,json} from "../lib/auth.js";
 const CINEMETA="https://v3-cinemeta.strem.io";
 const JIKAN="https://api.jikan.moe/v4";
 const TVMAZE="https://api.tvmaze.com";
+function normalizeQualities(value){
+ const values=Array.isArray(value)?value:(value==null?[]:[value]);
+ const found=new Set();
+ for(const item of values){
+  const text=String(typeof item==="object"?(item.quality||item.resolution||item.name||""):item).toLowerCase();
+  if(/4k|uhd|2160/.test(text))found.add("4K");
+  else if(/2k|qhd|1440/.test(text))found.add("2K");
+  else if(/hd|1080|720/.test(text))found.add("HD");
+ }
+ return ["4K","2K","HD"].filter(q=>found.has(q));
+}
 const MIN_YEAR=1985;
 const MAX_YEAR=new Date().getFullYear();
 
@@ -12,15 +23,15 @@ async function get(url){
  return r.json();
 }
 function mapCinemeta(x,type){
- return {id:String(x.imdb_id||x.id||""),type,title:x.name||x.title||"بدون عنوان",year:String(x.year||"").slice(0,4),overview:x.description||"",poster:x.poster||"",rating:Number(x.imdbRating||0),genres:Array.isArray(x.genres)?x.genres:[],source:"Cinemeta"};
+ return {id:String(x.imdb_id||x.id||""),type,title:x.name||x.title||"بدون عنوان",year:String(x.year||"").slice(0,4),overview:x.description||"",poster:x.poster||"",rating:Number(x.imdbRating||0),genres:Array.isArray(x.genres)?x.genres:[],qualities:normalizeQualities(x.qualities||x.quality||x.resolution||x.videoQuality),source:"Cinemeta"};
 }
 function mapAnime(x){
- return {id:String(x.mal_id),type:"anime",title:x.title||x.title_english||"بدون عنوان",titleEnglish:x.title_english||"",titleJapanese:x.title_japanese||"",year:String(x.year||x.aired?.prop?.from?.year||""),overview:x.synopsis||"",poster:x.images?.jpg?.large_image_url||x.images?.jpg?.image_url||"",rating:Number(x.score||0),genres:(x.genres||[]).map(g=>g.name),source:"Jikan",url:x.url||""};
+ return {id:String(x.mal_id),type:"anime",title:x.title||x.title_english||"بدون عنوان",titleEnglish:x.title_english||"",titleJapanese:x.title_japanese||"",year:String(x.year||x.aired?.prop?.from?.year||""),overview:x.synopsis||"",poster:x.images?.jpg?.large_image_url||x.images?.jpg?.image_url||"",rating:Number(x.score||0),genres:(x.genres||[]).map(g=>g.name),qualities:normalizeQualities(x.qualities||x.quality||x.resolution),source:"Jikan",url:x.url||""};
 }
 function mapTVMaze(row){
  const x=row.show||row;
  const summary=String(x.summary||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
- return {id:"tvmaze-"+x.id,type:"tv",title:x.name||"بدون عنوان",year:String(x.premiered||"").slice(0,4),overview:summary,poster:x.image?.original||x.image?.medium||"",rating:Number(x.rating?.average||0),genres:Array.isArray(x.genres)?x.genres:[],source:"TVmaze",url:x.url||""};
+ return {id:"tvmaze-"+x.id,type:"tv",title:x.name||"بدون عنوان",year:String(x.premiered||"").slice(0,4),overview:summary,poster:x.image?.original||x.image?.medium||"",rating:Number(x.rating?.average||0),genres:Array.isArray(x.genres)?x.genres:[],qualities:normalizeQualities(x.qualities||x.quality||x.resolution),source:"TVmaze",url:x.url||""};
 }
 function yearValid(y){const n=Number(y);return Number.isInteger(n)&&n>=MIN_YEAR&&n<=MAX_YEAR;}
 async function cinemeta(type,q,page,year){
