@@ -65,7 +65,8 @@ export default async function handler(req,res){
  });
  const filtered=items.filter(x=>{
   const y=Number(x.year);
-  return !x.year||(y>=MIN_YEAR&&y<=MAX_YEAR);
+  if(!Number.isInteger(y)||y<MIN_YEAR||y>MAX_YEAR)return false;
+  return !year||String(y)===year;
  });
  const unique=[...new Map(filtered.filter(x=>x.id).map(x=>[x.type+":"+x.id,x])).values()];
  return json(res,200,{items:unique.slice(0,100),page,year:year||null,updatedAt:new Date().toISOString(),providers},{ "Cache-Control":"public, s-maxage=900, stale-while-revalidate=3600"});
