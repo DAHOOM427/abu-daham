@@ -4,7 +4,7 @@ const SOURCES=[
  {id:"free-tv",label:"Free-TV",url:"https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8"},
  {id:"iptv-org",label:"IPTV-org",url:"https://iptv-org.github.io/iptv/index.m3u"}
 ];
-const MAX_CHANNELS=4000;
+const MAX_CHANNELS=10000;
 const TTL_MS=1000*60*30;
 let cache={time:0,data:null};
 function field(line,name){
@@ -53,7 +53,7 @@ function parse(text,source){
   const id=String(items.length+1);
   items.push({id:source.id+"-"+id,name:title.replace(/[ⓈⓎⒼⓉ]/g,"").trim().slice(0,100),category:category(title,group),emoji:"📡",group:group.slice(0,65),country,host:new URL(url).hostname,stream:url,logo,quality:/Ⓢ/.test(title)?"SD":/1080|4k|2160|hd/i.test(title)?"HD / وفق المصدر":"حسب المصدر",source:source.label+" public stream directory",checkedServer:false});
   dedupe.add(url);
-  if(items.length>=4000)break;
+  if(items.length>=12000)break;
  }
  return items;
 }
@@ -81,6 +81,10 @@ async function getChannels(){
   if(items.length>=MAX_CHANNELS)break;
  }
  if(items.length<10)throw new Error("No free channels returned");
+ items.sort((a,b)=>{
+  const rank=x=>(x.country==='SA'?0:x.country==='AE'?1:x.country==='EG'?2:x.country==='KW'?3:x.category==='news'?4:x.category==='islamic'?5:x.category==='sports'?6:7);
+  return rank(a)-rank(b);
+ });
  cache={time:Date.now(),data:{channels:items,sourceCounts}};
  return cache.data;
 }
@@ -89,7 +93,13 @@ export default async function handler(req,res){
  if(!valid(req))return json(res,401,{error:"يلزم تسجيل الدخول أولاً."});
  try{
   const result=await getChannels();
-  return json(res,200,{sources:SOURCES.map(s=>({id:s.id,url:s.url})),sourceCounts:result.sourceCounts,count:result.channels.length,channels:result.channels,updatedAt:new Date(cache.time).toISOString(),notice:"عدد الروابط المتاحة من قوائم عامة حتى 4,000. هذه ليست شهادة أنها تعمل جميعًا أو أن أصحابها يسمحون بالتضمين؛ لا تضمن المجانية ولا الإتاحة بالسعودية إلا بعد اختبار المشغّل."});
+  const u=new URL(req.url||"/api/live-tv","https://abu-daham.vercel.app");
+  const offset=Math.min(Math.max(Number(u.searchParams.get("offset"))||0,0),MAX_CHANNELS);
+  const limit=Math.min(Math.max(Number(u.searchParams.get("limit"))||100,1),160);
+  const q=String(u.searchParams.get("q")||"").trim().toLocaleLowerCase().slice(0,90);
+  const category=String(u.searchParams.get("category")||"").slice(0,40);
+  const filtered=result.channels.filter(ch=>(!category||category==="all"||ch.category===category)&&(!q||[ch.name,ch.group,ch.country,ch.host].join(" ").toLocaleLowerCase().includes(q)));
+  return json(res,200,{sources:SOURCES.map(s=>({id:s.id,url:s.url})),sourceCounts:result.sourceCounts,total:result.channels.length,count:filtered.length,offset,limit,hasMore:offset+limit<filtered.length,channels:filtered.slice(offset,offset+limit),updatedAt:new Date(cache.time).toISOString(),notice:"روابط البث مدرجة من قوائم عامة ومقسمة إلى صفحات للتصفح السريع، ولا نضمن تشغيلها جميعًا أو الترخيص بإعادة عرضها داخل الموقع."});
  }catch(error){
   return json(res,502,{error:"قائمة القنوات المجانية غير متاحة حاليًا؛ جرّب التحديث بعد قليل.",reason:"upstream-unavailable"});
  }
