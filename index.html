@@ -592,40 +592,54 @@ const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات
 let channelCategory='verified',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
-let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0,channelLagTimer=null;
+let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=180,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0,channelLagTimer=null,freeTVTotal=0,freeTVMatchCount=0,freeTVHasMore=false,freeTVSeq=0,freeTVLoading=false,freeTVSearchTimer=null;
 function allChannels(){return [...officialChannels.filter(x=>x.stream),...freeTVChannels,...officialChannels.filter(x=>!x.stream)]}
 function channelLogo(ch){
  const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
  return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
 }
-async function loadFreeTV(){
- if(freeTVPromise)return freeTVPromise;
- $('#channelDirectoryStatus').textContent='جارٍ جلب قنوات البث المجاني لتشغيلها داخل أبو داحم...';
- freeTVPromise=api('/api/live-tv').then(d=>{
-  freeTVChannels=Array.isArray(d.channels)?d.channels:[];
-  freeTVChannels.sort((a,b)=>{
-   const rank=x=>(x.country==='SA'?0:x.country==='AE'?1:x.country==='EG'?2:x.country==='KW'?3:x.category==='news'?4:5);
-   return rank(a)-rank(b);
-  });
-  $('#channelDirectoryStatus').textContent=freeTVChannels.length.toLocaleString('ar-SA')+' قناة HLS مدرجة من قائمة Free-TV المجانية. اضغط القناة لتجربة البث مباشرة. ليس كل رابط مضمون العمل أو متاحًا في السعودية؛ قد يمنع الناقل التشغيل داخل المتصفح.';
+async function loadFreeTV(append=false){
+ if(append&&freeTVLoading)return;
+ const seq=++freeTVSeq;
+ freeTVLoading=true;
+ if(!append){freeTVChannels=[];freeTVHasMore=false;freeTVMatchCount=0;channelVisibleCount=180;renderChannels();}
+ const offset=append?freeTVChannels.length:0;
+ const cat=['all','verified','favorites'].includes(channelCategory)?'all':channelCategory;
+ const q=['verified','favorites'].includes(channelCategory)?'':$('#channelSearch').value.trim();
+ $('#channelDirectoryStatus').textContent='جارٍ تحميل القنوات على دفعات حتى لا يثقل الموقع...';
+ const params=new URLSearchParams({offset:String(offset),limit:'120',category:cat,q});
+ const running=api('/api/live-tv?'+params.toString()).then(d=>{
+  if(seq!==freeTVSeq)return;
+  const batch=Array.isArray(d.channels)?d.channels:[];
+  freeTVChannels=append?[...freeTVChannels,...batch]:batch;
+  freeTVTotal=Number(d.total)||0;
+  freeTVMatchCount=Number(d.count)||0;
+  freeTVHasMore=Boolean(d.hasMore);
+  channelVisibleCount=Math.max(180,freeTVChannels.length+officialChannels.length);
+  $('#channelDirectoryStatus').textContent='فهرس البث: '+freeTVTotal.toLocaleString('ar-SA')+' رابط مُدرج، تحميل '+freeTVChannels.length.toLocaleString('ar-SA')+' بالتدريج. بعض الروابط غير مفحوصة، وليس كل رابط يعمل أو يسمح بالتضمين. اختر «✓ بث مفحوص» للقنوات التي اختُبر وصول الفيديو لها.';
   renderChannels();
- }).catch(e=>{
-  freeTVPromise=null;
-  $('#channelDirectoryStatus').textContent='لم نتمكن من تحميل قائمة القنوات الموسعة حاليًا. القنوات الرسمية الأساسية ما زالت ظاهرة. جرّب إعادة فتح قسم القنوات أو تحديث الصفحة.';
+ }).catch(()=>{
+  if(seq!==freeTVSeq)return;
+  freeTVHasMore=false;
+  $('#channelDirectoryStatus').textContent='تعذر تحميل القائمة الموسعة. القنوات الرسمية المتاحة ما زالت ظاهرة.';
   renderChannels();
- });
- return freeTVPromise;
+ }).finally(()=>{if(seq===freeTVSeq){freeTVLoading=false;freeTVPromise=null}});
+ freeTVPromise=running;
+ return running;
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
  const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
- $('#channelCount').textContent=filtered.length.toLocaleString('ar-SA')+' قناة مطابقة · '+allChannels().length.toLocaleString('ar-SA')+' مدرجة';
+ const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
+ const totalMatches=['verified','favorites'].includes(channelCategory)?filtered.length:officialCount+freeTVMatchCount;
+ $('#channelCount').textContent=totalMatches.toLocaleString('ar-SA')+' مطابقة · '+(freeTVTotal+officialChannels.length).toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
  '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?'✓ فُحص الوصول للبث':ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
- $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
+ $('#channelLoadMore').classList.toggle('hidden',(!freeTVHasMore&&filtered.length<=channelVisibleCount)||['verified','favorites'].includes(channelCategory));
+ $('#channelLoadMore').textContent=freeTVHasMore?'عرض 120 قناة أخرى':'عرض المزيد';
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
 
@@ -775,9 +789,9 @@ function openChannelRoom(id){
  }
  $('#channelRoom').classList.remove('hidden');$('#channelRoom').scrollIntoView({behavior:'smooth',block:'start'});
 }
-$('#channelLoadMore').onclick=()=>{channelVisibleCount+=64;renderChannels();};
-$('#channelSearch').addEventListener('input',()=>{channelVisibleCount=64;renderChannels();});
-$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;channelVisibleCount=64;renderChannels();});
+$('#channelLoadMore').onclick=()=>{if(freeTVHasMore)loadFreeTV(true);else{channelVisibleCount+=120;renderChannels()}};
+$('#channelSearch').addEventListener('input',()=>{clearTimeout(freeTVSearchTimer);if(['verified','favorites'].includes(channelCategory)){renderChannels();return}freeTVSearchTimer=setTimeout(()=>loadFreeTV(false),350)});
+$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;channelVisibleCount=180;if(['verified','favorites'].includes(channelCategory))renderChannels();else loadFreeTV(false);});
 $('#channelGrid').addEventListener('click',e=>{
  const fav=e.target.closest('button[data-favorite]');if(fav){const id=fav.dataset.favorite;if(channelFavorites.has(id))channelFavorites.delete(id);else channelFavorites.add(id);try{localStorage.setItem('abu_daham_channel_favorites_v1',JSON.stringify([...channelFavorites]))}catch{}renderChannels();return}
  const b=e.target.closest('button[data-open-channel]');if(b)openChannelRoom(b.dataset.openChannel);
