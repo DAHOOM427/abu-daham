@@ -648,8 +648,20 @@ async function openChannelStream(ch){
    startLevel:-1
   });
   channelHls=player;
+  let recoveryAttempts=0;
   player.on(Hls.Events.ERROR,(event,data)=>{
-   if(data.fatal)fail('مصدر القناة لا يسمح بالتشغيل أو توقف: '+(data.details||data.type||'خطأ بث'));
+   if(!data.fatal||generation!==channelGeneration)return;
+   if(recoveryAttempts<2&&data.type===Hls.ErrorTypes.NETWORK_ERROR){
+    recoveryAttempts++;
+    channelState('انقطع اتصال القناة لحظيًا · محاولة استعادة البث ('+recoveryAttempts+'/2)...');
+    player.startLoad();return;
+   }
+   if(recoveryAttempts<2&&data.type===Hls.ErrorTypes.MEDIA_ERROR){
+    recoveryAttempts++;
+    channelState('تتم معالجة مشكلة الفيديو · محاولة '+recoveryAttempts+' من 2...');
+    player.recoverMediaError();return;
+   }
+   fail('توقف بث القناة أو لا يسمح مصدرها بالتشغيل: '+(data.details||data.type||'خطأ بث'));
   });
   player.on(Hls.Events.MANIFEST_PARSED,()=>{
    if(generation!==channelGeneration)return;
