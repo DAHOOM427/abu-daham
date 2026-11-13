@@ -192,6 +192,15 @@
 .ch-player-controls button,.ch-player-controls select{background:#162918;color:#d9f5ce;border:1px solid #476b3d;padding:9px 11px;border-radius:9px;font-size:12px}
 .ch-player-controls select:disabled{opacity:.5}.ch-player-controls button:hover{border-color:#b8f34b}
 @media(max-width:580px){.ch-player-controls{gap:7px}.ch-player-controls [role=status]{width:100%}}
+
+.kick{max-width:1100px;margin:auto}.kick-head{background:linear-gradient(125deg,#1b311b,#0c170e);border:1px solid #4d713b;border-radius:18px;padding:20px}.kick-head h2{margin:10px 0}.kick-head p{line-height:1.9}.kick-kicker{font-size:11px;color:var(--green);letter-spacing:1.6px;font-weight:bold}
+.kick-search{margin-top:18px;max-width:720px}.kick .frame{width:min(100%,1100px);height:auto;aspect-ratio:16/9;border:1px solid #456d35;background:#060906;overflow:hidden}.kick .frame iframe{display:block;width:100%;height:100%}
+.kick-guide{background:#111c13;border:1px solid #476438;border-radius:14px;padding:17px;margin-top:16px;line-height:1.85}
+.kick-controls{display:flex;flex-wrap:wrap;gap:10px}.kick-controls button{padding:11px 14px;border-radius:9px}
+.kick-control-primary{background:var(--green);color:#17250b;border:0;font-weight:900}
+.kick-quality-instructions{padding:14px;margin-top:15px;border-radius:10px;background:#1a2c1b;color:#dbeed8;border:1px solid #536e43;font-size:13px}
+.kick-quality-instructions strong{color:var(--green)}.kick-quality-instructions p{margin:8px 0}.kick-source{margin:14px 0}.kick-source a{display:inline-block;color:#19260e;background:#b8f34b;border-radius:10px;padding:10px 14px;font-weight:bold;font-size:12px;text-decoration:none}
+@media(max-width:600px){.kick-head{padding:15px}.kick-controls{display:grid;grid-template-columns:repeat(2,1fr)}.kick-controls button{font-size:11px;padding:9px}}
 </style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="free">🎬 مشاهدة بدون إعلانات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section class="targets" aria-label="أهداف مكتبة أبو داحم"><div><strong>359,756</strong><small>هدف الأفلام (غالبًا 90–180 دقيقة)</small></div><div><strong>175,225</strong><small>هدف المسلسلات بمواسمها وحلقاتها</small></div><div><strong>41,537</strong><small>هدف أعمال الأنمي الكاملة</small></div><div><strong>50,000</strong><small>هدف القنوات النهائي · المرحلة الأولى 25,000</small></div><div><strong>626,518</strong><small>إجمالي الأهداف النهائية شامل القنوات</small></div><p><strong>هذه أعداد مستهدفة وليست محتوى متاحًا الآن.</strong> الفيلم غالبًا من ساعة ونصف إلى 3 ساعات؛ الكرتون الطويل من ساعة إلى ساعتين؛ المسلسل الكوميدي 20–30 دقيقة للحلقة؛ الدراما والأكشن والكوري غالبًا 40 دقيقة فأكثر؛ الأنمي غالبًا 20–25 دقيقة للحلقة. عدد الحلقات والمواسم مختلف لكل مسلسل، والمطلوب حلقاته الأصلية كاملة. التصنيف بحسب مدة العمل الفعلية، ولا نعتبر المقاطع القصيرة التجريبية أفلامًا طويلة. الجودة 4K / 2K / HD عند توفر نسخة وحقوق عرض لها.</p></section><section class="filters" id="filters"><label for="yearFilter">سنة الإصدار</label><select id="yearFilter"><option value="">كل السنوات (1985–2026)</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option></select><label for="qualityFilter">الجودة</label><select id="qualityFilter"><option value="">كل الجودات</option><option value="4K">4K</option><option value="2K">2K / QHD</option><option value="HD">HD</option></select><button id="refresh" class="refresh">تحديث النتائج</button></section><div id="status" class="status">اختر قسماً أو اكتب اسم ما تبحث عنه.</div><section id="results" class="grid"></section><div class="pager"><button id="prevPage" disabled>السابق</button><span id="pageLabel" class="muted">صفحة 1</span><button id="nextPage">التالي</button></div><div id="detail" class="detail-backdrop hidden"><article class="detail-panel"><button id="detailClose" class="detail-close">إغلاق ✕</button><div id="detailBody"></div></article></div><section id="sportsPanel" class="sports-panel sports-hub hidden">
  <div class="sports-hub-header">
   <div><div class="sports-kicker">ABU DAHAM · SPORTS CENTER</div><h2>مركز المباريات والنتائج</h2><p>نتائج ومواعيد وترتيب الأندية والبطولات</p></div>
@@ -292,7 +301,26 @@
  </div>
  <div class="ad-free-policy"><strong>الترخيص والمصدر</strong><p>أفلام Blender الواردة هنا تحت تراخيص Creative Commons مع نسب العمل لأصحابه وترك شارة النهاية كاملة. مقاطع العائلة تبقى على جهازك فقط. القنوات الرسمية وروابط الأنمي أو المسلسلات التي لا تسمح بالتضمين تُفتح في مواقع أصحابها، وقد تعرض إعلاناتهم. لا يوجد بث رياضي مقرصن أو ضمان 4K لجميع الفيديوهات.</p></div>
 </section>
-<section id="kick" class="kick hidden" aria-label="مشاهدة Kick"><h2>🟢 قنوات Kick مباشرة</h2><p class="muted">شغّل القناة داخل أبو داحم بالمشغّل الرسمي. الجودة تتحدد من إعدادات Kick نفسه حسب القناة والاتصال.</p><div class="search" style="max-width:660px"><input id="kickname" placeholder="اسم قناة Kick بدون @" autocomplete="off" aria-label="اسم قناة Kick"><button id="kickbtn" class="primary" type="button">▶ شاهد القناة</button></div><div id="frame" class="frame hidden"><iframe id="player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="مشغّل Kick الرسمي"></iframe></div><div id="kickGuide" class="hidden" style="margin-top:16px;padding:16px;border:1px solid #435f37;border-radius:14px;background:#101b13;line-height:1.9"><strong style="color:var(--green)">⚙️ اختيار الجودة داخل المشغّل</strong><p class="muted" style="margin:6px 0">اضغط ترس الإعدادات داخل فيديو Kick ثم «الجودة» واختر Auto أو HD / 720p أو أقل، حسب ما توفره القناة. قد تظهر 1080p أو 480p أو 360p أو 160p؛ ولا يمكن ضمان ظهور 144p أو كل الجودات في كل بث. مستوى التأخير يتحكم فيه Kick والناشر، وليس موقع أبو داحم.</p><div class="free-links"><a id="kickOfficialLink" href="https://kick.com/" target="_blank" rel="noopener noreferrer">فتح القناة في Kick</a><button id="kickStop" type="button" class="smallbtn">إيقاف البث</button></div><small id="kickStatus" class="muted">قد تظهر إعلانات من خدمة Kick نفسها.</small></div></section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
+<section id="kick" class="kick hidden" aria-label="مشاهدة قنوات Kick">
+ <div class="kick-head"><div><span class="kick-kicker">ABU DAHAM · KICK LIVE</span><h2>🟢 شاهد بث Kick داخل أبو داحم</h2><p class="muted">المشاهدة تتم بالمشغل الرسمي من Kick. جودة البث تعتمد على الخيارات التي يوفرها Kick للقناة والمتصفح.</p></div></div>
+ <div class="search kick-search"><input id="kickname" placeholder="اسم قناة Kick بدون @" autocomplete="off" aria-label="اسم قناة Kick"><button id="kickbtn" class="primary" type="button">▶ شاهد القناة</button></div>
+ <div id="frame" class="frame hidden"><iframe id="player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="مشغّل Kick الرسمي"></iframe></div>
+ <div id="kickGuide" class="kick-guide hidden">
+  <div class="kick-controls">
+   <button id="kickFullscreen" type="button" class="kick-control-primary">⛶ تكبير المشغل</button>
+   <button id="kickQualityHelp" type="button" class="smallbtn" aria-controls="kickQualityInstructions" aria-expanded="false">⚙️ كيف أغير الجودة؟</button>
+   <button id="kickRefresh" type="button" class="smallbtn">↻ تحديث البث</button>
+   <button id="kickStop" type="button" class="smallbtn">■ إيقاف البث</button>
+  </div>
+  <div id="kickQualityInstructions" class="kick-quality-instructions hidden">
+   <strong>⚙️ التحكم بالجودة في Kick</strong>
+   <p>اضغط على الفيديو لإظهار أدوات المشغّل. إذا ظهر ترس الإعدادات، افتحه ثم اختر «Quality / الجودة» وحدد الدقة المتوفرة مثل Auto أو 720p أو 1080p. إذا ما ظهر خيار الجودة في مشغل Kick المضمّن، افتح القناة من الرابط الرسمي أدناه؛ الموقع ما يقدر يتحكم في جودة مشغل Kick الخارجي أو يضيف دقة غير موجودة.</p>
+   <p class="muted">للتقليل من التقطيع اختر Auto أو دقة أقل من داخل Kick عندما تكون الخيارات متاحة. التكبير والتحديث يعملان داخل أبو داحم، أما تغيير الدقة نفسه فتتحكم فيه خدمة Kick.</p>
+  </div>
+  <div class="kick-source"><a id="kickOfficialLink" href="https://kick.com/" target="_blank" rel="noopener noreferrer">فتح القناة على Kick للتحكم بجودة المشاهدة</a></div>
+  <small id="kickStatus" class="muted">قد تظهر إعلانات من Kick نفسه.</small>
+ </div>
+</section><div class="foot">أبو داحم | ABU DAHAM · البث والقنوات والمحتوى المرئي يخضع لحقوق مزوّديه. يلزم إضافة مزوّدات بيانات وروابط بث مرخّصة لتفعيل جميع الخدمات.</div></main></div><script>
 const $=s=>document.querySelector(s);let type='all',page=1,lastItems=[],sportsView='today',sportsLeague='',sportsSeason='',sportsSport='all',sportsCompetitions=[],sportsLastData=null,sportsSelectedTeam='',sportsOnlyAhli=false,sportsCurrentMatch=null;
 const clubArabic={'Al Hilal':'الهلال','Al-Hilal':'الهلال','Al Nassr':'النصر','Al-Nassr':'النصر','Al Ahli':'الأهلي','Al-Ahli':'الأهلي','Al Ittihad':'الاتحاد','Al-Ittihad':'الاتحاد','Al Shabab':'الشباب','Al-Shabab':'الشباب','Real Madrid':'ريال مدريد','Barcelona':'برشلونة','Atletico Madrid':'أتلتيكو مدريد','Manchester City':'مانشستر سيتي','Manchester United':'مانشستر يونايتد','Liverpool':'ليفربول','Arsenal':'آرسنال','Chelsea':'تشيلسي','Tottenham':'توتنهام','Bayern Munich':'بايرن ميونخ','Borussia Dortmund':'بوروسيا دورتموند','Inter':'إنتر ميلان','AC Milan':'ميلان','Juventus':'يوفنتوس','Paris Saint-Germain':'باريس سان جيرمان','PSG':'باريس سان جيرمان','Napoli':'نابولي','Roma':'روما','Al Qadsiah':'القادسية','Al Ettifaq':'الاتفاق','Al Taawoun':'التعاون'};
 const sportViewTitles={live:['المباريات المباشرة','المباريات التي يجري تحديث بياناتها'],today:['مباريات اليوم','جدول مباريات اليوم بتوقيت السعودية'],tomorrow:['مباريات الغد','المواعيد القادمة بتوقيت السعودية'],next:['المباريات القادمة','الجدول القادم حسب تغطية المصدر'],results:['النتائج','المباريات والنتائج المسجلة'],standings:['ترتيب البطولات','جدول النقاط والأهداف'],competitions:['البطولات والكؤوس','الدوريات المحلية والقارية والعالمية'],teams:['الأندية والمنتخبات','ابحث عن النادي أو اعرض فرق البطولة']};
@@ -844,6 +872,38 @@ $('#sportsResults').addEventListener('click',e=>{
  const comp=e.target.closest('button[data-comp]');if(comp){sportsLeague=comp.dataset.comp;sportsSeason=comp.dataset.season||'';sportsSelectedTeam='';sportsView='today';renderSportsControls();loadSports();return}
  const team=e.target.closest('button[data-team]');if(team){sportsSelectedTeam=team.dataset.team;sportsView='today';$('#sportsSearch').value='';loadSports()}
 });
-$('#kickbtn').onclick=()=>{const n=$('#kickname').value.trim().replace(/^@/,'');if(!/^[A-Za-z0-9_]{2,25}$/.test(n)){alert('اكتب اسم قناة صحيحاً');return}$('#player').src='https://player.kick.com/'+encodeURIComponent(n)+'?autoplay=true';$('#kickOfficialLink').href='https://kick.com/'+encodeURIComponent(n);$('#frame').classList.remove('hidden');$('#kickGuide').classList.remove('hidden');$('#kickStatus').textContent='القناة: '+n+' · جودة البث والإعلانات تحت تحكم Kick.';$('#frame').scrollIntoView({behavior:'smooth',block:'start'})};$('#kickStop').onclick=()=>{$('#player').removeAttribute('src');$('#frame').classList.add('hidden');$('#kickGuide').classList.add('hidden')};
+let kickCurrentName='';
+$('#kickbtn').onclick=()=>{
+ const n=$('#kickname').value.trim().replace(/^@/,'');
+ if(!/^[A-Za-z0-9_]{2,25}$/.test(n)){alert('اكتب اسم قناة Kick صحيحًا');return}
+ kickCurrentName=n;
+ $('#player').src='https://player.kick.com/'+encodeURIComponent(n)+'?autoplay=true';
+ $('#kickOfficialLink').href='https://kick.com/'+encodeURIComponent(n);
+ $('#frame').classList.remove('hidden');$('#kickGuide').classList.remove('hidden');
+ $('#kickQualityInstructions').classList.add('hidden');$('#kickQualityHelp').setAttribute('aria-expanded','false');
+ $('#kickStatus').textContent='قناة '+n+' · المشغل من Kick والجودة بيد Kick.';
+ $('#frame').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('#kickQualityHelp').onclick=()=>{
+ const panel=$('#kickQualityInstructions'),expand=panel.classList.contains('hidden');
+ panel.classList.toggle('hidden',!expand);
+ $('#kickQualityHelp').setAttribute('aria-expanded',String(expand));
+ if(expand)panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+$('#kickFullscreen').onclick=()=>{
+ const frame=$('#player');
+ if(frame.requestFullscreen)frame.requestFullscreen().catch(()=>{$('#kickStatus').textContent='الملء الكامل غير متاح في المتصفح الحالي.'});
+ else if(frame.webkitRequestFullscreen)frame.webkitRequestFullscreen();
+ else $('#kickStatus').textContent='متصفحك لا يدعم تكبير مشغّل Kick.';
+};
+$('#kickRefresh').onclick=()=>{
+ if(!kickCurrentName)return;
+ const f=$('#player');f.src='https://player.kick.com/'+encodeURIComponent(kickCurrentName)+'?autoplay=true';
+ $('#kickStatus').textContent='أُعيد تحميل بث '+kickCurrentName+'، افتح ترس Kick داخل الفيديو إذا كان متاحًا.';
+};
+$('#kickStop').onclick=()=>{
+ $('#player').removeAttribute('src');$('#frame').classList.add('hidden');$('#kickGuide').classList.add('hidden');
+ $('#kickQualityInstructions').classList.add('hidden');kickCurrentName='';
+};
 (async()=>{try{const a=await api('/api/auth');if(a.authenticated&&sessionStorage.getItem('daham_tab_login')==='1'){show();load()}else{if(a.authenticated)try{await api('/api/logout',{method:'POST'})}catch(e){}gate()}}catch(e){gate()}})();
 </script></body></html>
