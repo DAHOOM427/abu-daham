@@ -190,7 +190,7 @@
 .ch-player-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 4px;font-size:12px;color:#c7dabd}
 .ch-player-controls [role=status]{margin-inline-end:auto;color:#bde69f;font-size:12px;line-height:1.7}
 .ch-player-controls button,.ch-player-controls select{background:#162918;color:#d9f5ce;border:1px solid #476b3d;padding:9px 11px;border-radius:9px;font-size:12px}
-.ch-player-controls select:disabled{opacity:.5}.ch-player-controls button:hover{border-color:#b8f34b}
+.ch-player-controls select:disabled{opacity:.5}.ch-player-controls button:hover{border-color:#b8f34b}.ch-edge-lag{font-size:10px;color:#c1d7b7}
 @media(max-width:580px){.ch-player-controls{gap:7px}.ch-player-controls [role=status]{width:100%}}
 
 .kick{max-width:1100px;margin:auto}.kick-head{background:linear-gradient(125deg,#1b311b,#0c170e);border:1px solid #4d713b;border-radius:18px;padding:20px}.kick-head h2{margin:10px 0}.kick-head p{line-height:1.9}.kick-kicker{font-size:11px;color:var(--green);letter-spacing:1.6px;font-weight:bold}
@@ -271,7 +271,9 @@
   <div class="ch-player-controls" id="channelPlayerControls">
    <span id="channelPlaybackState" role="status" aria-live="polite">اختر قناة للبدء</span>
    <label>الجودة <select id="channelStreamQuality" aria-label="جودة بث القناة" disabled><option value="-1">تلقائي</option></select></label>
-   <button id="channelGoLive" type="button" title="العودة إلى آخر نقطة في البث المباشر">● إلى المباشر</button>
+   <label>التأخير <select id="channelLatencyMode" aria-label="وضع تأخير البث"><option value="fast">⚡ أقل تأخير</option><option value="stable">🛡️ استقرار أكثر</option></select></label>
+   <button id="channelGoLive" type="button" title="العودة إلى أحدث نقطة يسمح بها مصدر البث">● إلى المباشر</button>
+   <span id="channelEdgeLag" class="ch-edge-lag" aria-live="off"></span>
    <button id="channelReconnect" type="button" title="إعادة محاولة الاتصال بالقناة">↻ إعادة الاتصال</button>
   </div>
   <p id="channelRoomDescription" class="ch-room-description"></p>
@@ -571,7 +573,7 @@ const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات
 let channelCategory='verified',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
-let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0;
+let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0,channelLagTimer=null;
 function allChannels(){return [...officialChannels.filter(x=>x.stream),...freeTVChannels,...officialChannels.filter(x=>!x.stream)]}
 function channelLogo(ch){
  const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
@@ -613,6 +615,8 @@ function channelState(message){
 }
 function stopChannelPlayback(){
  channelGeneration++;
+ if(channelLagTimer){clearInterval(channelLagTimer);channelLagTimer=null}
+ $('#channelEdgeLag').textContent='';
  if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
  if(channelHls){channelHls.destroy();channelHls=null}
  const video=$('#channelVideoArea video');if(video){video.pause();video.removeAttribute('src');video.load()}
@@ -659,11 +663,17 @@ function setupChannelQuality(player){
 }
 async function openChannelStream(ch){
  const box=$('#channelVideoArea'),generation=channelGeneration;
+ const latencyFast=$('#channelLatencyMode').value==='fast';
  const video=document.createElement('video');
  video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='auto';
  video.setAttribute('aria-label','البث المباشر: '+ch.name);
  video.addEventListener('playing',()=>{
   if(generation!==channelGeneration)return;
+  if(channelLagTimer)clearInterval(channelLagTimer);
+  channelLagTimer=setInterval(()=>{
+   if(generation!==channelGeneration)return;
+   try{if(video.seekable.length){const end=video.seekable.end(video.seekable.length-1),lag=end-video.currentTime;$('#channelEdgeLag').textContent=Number.isFinite(lag)&&lag>=0?'فارق المشغّل ≈ '+Math.round(lag)+' ث (غير شامل تأخير الناقل)':''}}catch{}
+  },3000);
   if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
   channelState('● مباشر · جودة تلقائية لتقليل التقطيع');
  });
@@ -686,10 +696,10 @@ async function openChannelStream(ch){
   const player=new Hls({
    enableWorker:true,
    lowLatencyMode:true,
-   liveSyncDurationCount:3,
-   liveMaxLatencyDurationCount:9,
-   maxLiveSyncPlaybackRate:1.05,
-   maxBufferLength:18,
+   liveSyncDurationCount:latencyFast?2:4,
+   liveMaxLatencyDurationCount:latencyFast?5:10,
+   maxLiveSyncPlaybackRate:latencyFast?1.25:1.05,
+   maxBufferLength:latencyFast?8:20,
    backBufferLength:20,
    capLevelToPlayerSize:true,
    capLevelOnFPSDrop:true,
@@ -766,6 +776,12 @@ $('#channelGoLive').onclick=()=>{
   video.play().catch(()=>{});
   channelState('الانتقال إلى أحدث نقطة متاحة في البث...');
  }catch{channelState('لم يمكن الوصول إلى أحدث نقطة للبث')}
+};
+$('#channelLatencyMode').onchange=()=>{
+ const ch=currentChannel;
+ if(!ch||!ch.stream){channelState('أوضاع تقليل التأخير تخص القنوات التي تشتغل داخل أبو داحم فقط');return}
+ stopChannelPlayback();openChannelStream(ch);
+ channelState($('#channelLatencyMode').value==='fast'?'⚡ تم اختيار أقل تأخير ممكن من المشغل، انتظر بدء البث':'🛡️ تم اختيار التخزين الإضافي لتثبيت البث');
 };
 $('#channelStreamQuality').onchange=()=>{
  if(!channelHls)return;
