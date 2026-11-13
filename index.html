@@ -236,7 +236,7 @@
 <section id="channelHub" class="ch-hub hidden" aria-label="قنوات مجانية رسمية">
  <div class="ch-hero">
   <div class="ch-kicker">ABU DAHAM · LIVE CHANNELS</div>
-  <h2>📡 قنوات أبو داحم المجانية</h2><div class="ch-source-note">الهدف النهائي: 50,000 قناة مجانية. المرحلة الأولى: الوصول إلى 25,000 قناة. العدد المعروض أدناه هو عدد القنوات المدرجة فعليًا من المصادر الحالية، وليس عدد القنوات المضمونة التشغيل.</div>
+  <h2>📡 قنوات أبو داحم المجانية</h2><div class="ch-source-note">الهدف النهائي: 50,000 قناة مجانية. المرحلة الأولى: الوصول إلى 25,000 قناة. «بث مفحوص» يعرض قنوات اختبرنا وصول ملفات الفيديو لها أولًا؛ وباقي القنوات بتبويب «جميع القنوات». العدد المعروض أدناه هو عدد القنوات المدرجة فعليًا من المصادر الحالية، وليس عدد القنوات المضمونة التشغيل.</div>
   <p>اضغط على القناة وتابع بثها داخل موقع أبو داحم من المشغل المدمج، بدون ما تحتاج تفتح موقع ثاني. القنوات هنا من قوائم البث المجاني العام؛ قد يتوقف بعض البث أو يكون محجوبًا حسب الدولة، ولا توجد ضمانات أن جميع القنوات تدعم المشغل. الإعلانات الخاصة بالناقل مسموحة.</p>
   <div class="ch-hero-tags"><span>مصادر رسمية</span><span>بحث وتصنيفات</span><span>قنواتك المفضلة ♡</span><span>بدون إعلانات من موقعنا</span></div>
  </div>
@@ -245,7 +245,7 @@
   <span class="ch-count" id="channelCount"></span>
  </div>
  <div id="channelCategories" class="ch-tabs" aria-label="أقسام القنوات">
-  <button data-chcat="all" class="active">الكل</button><button data-chcat="favorites">♡ المفضلة</button><button data-chcat="global">🌐 قنوات عالمية</button>
+  <button data-chcat="verified" class="active">✓ بث مفحوص</button><button data-chcat="all">جميع القنوات</button><button data-chcat="favorites">♡ المفضلة</button><button data-chcat="global">🌐 قنوات عالمية</button>
   <button data-chcat="islamic">🕌 إسلامية</button><button data-chcat="news">🌍 أخبار</button>
   <button data-chcat="documentary">🌿 وثائقية</button><button data-chcat="entertainment">📺 منوعة</button>
   <button data-chcat="kids">🧸 أطفال</button><button data-chcat="sports">⚽ رياضة</button>
@@ -492,8 +492,16 @@ $('#logout').onclick=async()=>{sessionStorage.removeItem('daham_tab_login');try{
 
 /* Licensed/free broadcast directory. Do not retransmit third-party streams. */
 const officialChannels=[
- {id:'dw-arabic-verified',name:'DW عربية — بث مباشر',category:'news',emoji:'🌍',host:'dw.com',url:'https://www.dw.com/ar/',desc:'تلفزيون دويتشه فيله العربي · بث مجاني من خادم القناة الرسمي، وقد تختلف الإتاحة.',stream:'https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
- {id:'dw-english-verified',name:'DW English — Live',category:'news',emoji:'📺',host:'dw.com',url:'https://www.dw.com/en/',desc:'قناة دويتشه فيله الدولية · مباشر مجاني من شبكة القناة.',stream:'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
+ {"id":"v-aljazeera-ar","name":"الجزيرة الإخبارية","category":"news","emoji":"🌍","host":"aljazeera.net","url":"https://www.aljazeera.net/video/live","stream":"https://live-hls-apps-aja-fa.getaj.net/AJA/index.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-france24-ar","name":"فرانس 24 بالعربية","category":"news","emoji":"🇫🇷","host":"france24.com","url":"https://www.france24.com/ar/live","stream":"https://live.france24.com/hls/live/2037222-b/F24_AR_HI_HLS/master_5000.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-asharq-news","name":"الشرق للأخبار","category":"news","emoji":"📈","host":"asharq.com","url":"https://now.asharq.com/live/","stream":"https://live-news.asharq.com/asharq.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-sky-arabia","name":"سكاي نيوز عربية","category":"news","emoji":"🌐","host":"skynewsarabia.com","url":"https://www.skynewsarabia.com/","stream":"https://stream.skynewsarabia.com/ott/ott.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-bbc-arabic","name":"BBC عربي","category":"news","emoji":"📰","host":"bbc.com","url":"https://www.bbc.com/arabic","stream":"https://vs-hls-pushb-ww.live.cf.md.bbci.co.uk/x=4/i=urn:bbc:pips:service:bbc_arabic_tv/pc_hd_abr_v2.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-cnbc-ar","name":"CNBC عربية","category":"news","emoji":"💹","host":"cnbcarabia.com","url":"https://www.cnbcarabia.com/","stream":"https://cnbc-live.akamaized.net/cnbc/master.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-trt-ar","name":"TRT عربي","category":"news","emoji":"🎙️","host":"trtarabi.com","url":"https://www.trtarabi.com/","stream":"https://tv-trtarabi.medya.trt.com.tr/master.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {"id":"v-spacetoon-ar","name":"سبيستون — أطفال","category":"kids","emoji":"🧸","host":"spacetoon.com","url":"https://spacetoon.com/","stream":"https://live-uae-next.spacetoongo.com/ST_MENA_NEXT/hls/r9p2hjipmw2kl.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
+ {id:'dw-arabic-verified',checkedServer:true,name:'DW عربية — بث مباشر',category:'news',emoji:'🌍',host:'dw.com',url:'https://www.dw.com/ar/',desc:'تلفزيون دويتشه فيله العربي · بث مجاني من خادم القناة الرسمي، وقد تختلف الإتاحة.',stream:'https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
+ {id:'dw-english-verified',checkedServer:true,name:'DW English — Live',category:'news',emoji:'📺',host:'dw.com',url:'https://www.dw.com/en/',desc:'قناة دويتشه فيله الدولية · مباشر مجاني من شبكة القناة.',stream:'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
  {id:'ksa-quran',name:'قناة القرآن الكريم',category:'islamic',emoji:'🕋',host:'aloula.sba.sa',url:'https://www.youtube.com/watch?v=kYqGbBqmp8g',home:'https://aloula.sba.sa/live/quran',desc:'البث الرسمي من مكة المكرمة التابع لهيئة الإذاعة والتلفزيون السعودية.',embed:'kYqGbBqmp8g'},
  {id:'ksa-sunnah',name:'قناة السنة النبوية',category:'islamic',emoji:'🕌',host:'aloula.sba.sa',url:'https://www.youtube.com/watch?v=_XKTQFrEGUI',home:'https://aloula.sba.sa/',desc:'البث الرسمي من المسجد النبوي بالمدينة المنورة.',embed:'_XKTQFrEGUI'},
  {id:'saudi-tv',name:'قنوات السعودية — الأولى',category:'entertainment',emoji:'🇸🇦',host:'aloula.sba.sa',url:'https://aloula.sba.sa/',desc:'مباشر وقنوات وبرامج هيئة الإذاعة والتلفزيون، حسب ما تعرضه المنصة.'},
@@ -512,7 +520,7 @@ const officialChannels=[
  {id:'fifa-plus',name:'FIFA+ — رياضة',category:'sports',emoji:'⚽',host:'fifa.com',url:'https://www.fifa.com/fifaplus',desc:'مباريات وبرامج مجانية مختارة حسب بلدك وحقوق النقل.'}
 ];
 const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات أخبار',documentary:'وثائقيات وعلوم',entertainment:'قنوات منوعة',kids:'قنوات أطفال',sports:'قنوات رياضية'};
-let channelCategory='all',currentChannel=null,channelFavorites=new Set();
+let channelCategory='verified',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
 let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0;
@@ -541,13 +549,13 @@ async function loadFreeTV(){
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search)));
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search)));
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
  $('#channelCount').textContent=filtered.length.toLocaleString('ar-SA')+' قناة مطابقة · '+allChannels().length.toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.stream?'بث مباشر داخل الموقع':'صفحة الناقل الرسمية')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.checkedServer?'✓ فُحص الوصول للبث':'لم يُفحص البث بعد')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
