@@ -1,6 +1,10 @@
 import {valid,json} from "../lib/auth.js";
 
-const PLAYLIST_URL="https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8";
+const SOURCES=[
+ {id:"free-tv",label:"Free-TV",url:"https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8"},
+ {id:"iptv-org",label:"IPTV-org",url:"https://iptv-org.github.io/iptv/index.m3u"}
+];
+const MAX_CHANNELS=4000;
 const TTL_MS=1000*60*30;
 let cache={time:0,data:null};
 function field(line,name){
@@ -25,7 +29,7 @@ function category(name,group){
  if(/quran|sunnah|islam|قرآن|سنة|حرم|مكة|المدينة/i.test(text))return "islamic";
  return "global";
 }
-function parse(text){
+function parse(text,source){
  if(typeof text!=="string"||!text.startsWith("#EXTM3U"))throw Error("Invalid playlist");
  const lines=text.split(/\r?\n/),items=[],dedupe=new Set();
  for(let i=0;i<lines.length;i++){
@@ -47,7 +51,7 @@ function parse(text){
   const logo=safeUrl(field(line,"tvg-logo"));
   const country=field(line,"tvg-country").slice(0,16);
   const id=String(items.length+1);
-  items.push({id:"free-tv-"+id,name:title.replace(/[ⓈⓎⒼⓉ]/g,"").trim().slice(0,100),category:category(title,group),emoji:"📡",group:group.slice(0,65),country,host:new URL(url).hostname,stream:url,logo,quality:/Ⓢ/.test(title)?"SD":/1080|4k|2160|hd/i.test(title)?"HD / وفق المصدر":"حسب المصدر",source:"Free-TV public FTA list"});
+  items.push({id:source.id+"-"+id,name:title.replace(/[ⓈⓎⒼⓉ]/g,"").trim().slice(0,100),category:category(title,group),emoji:"📡",group:group.slice(0,65),country,host:new URL(url).hostname,stream:url,logo,quality:/Ⓢ/.test(title)?"SD":/1080|4k|2160|hd/i.test(title)?"HD / وفق المصدر":"حسب المصدر",source:source.label+" public stream directory",checkedServer:false});
   dedupe.add(url);
   if(items.length>=4000)break;
  }
@@ -55,21 +59,37 @@ function parse(text){
 }
 async function getChannels(){
  if(cache.data&&Date.now()-cache.time<TTL_MS)return cache.data;
- const response=await fetch(PLAYLIST_URL,{headers:{Accept:"text/plain"},signal:AbortSignal.timeout(15000)});
- if(!response.ok)throw Error("playlist unavailable");
- const content=await response.text();
- if(content.length>6000000)throw Error("playlist too large");
- const items=parse(content);
- if(items.length<10)throw Error("playlist empty");
- cache={time:Date.now(),data:items};
- return items;
+ const results=await Promise.allSettled(SOURCES.map(async source=>{
+  const response=await fetch(source.url,{headers:{Accept:"text/plain"},signal:AbortSignal.timeout(15000)});
+  if(!response.ok)throw new Error("Unavailable "+source.id);
+  const content=await response.text();
+  if(content.length>6500000)throw new Error("Playlist too large");
+  return parse(content,source);
+ }));
+ const items=[],seen=new Set(),sourceCounts={};
+ for(let i=0;i<results.length;i++){
+  const result=results[i],source=SOURCES[i];
+  if(result.status!=="fulfilled"){sourceCounts[source.id]="unavailable";continue}
+  sourceCounts[source.id]=result.value.length;
+  for(const ch of result.value){
+   if(seen.has(ch.stream))continue;
+   // Paid and obviously restricted TV channel names must never be mislabeled free.
+   if(/\b(?:beIN|Sky Sports|DAZN|OSN|Eleven Sports|SuperSport Premium|TNT Sports)\b/i.test(ch.name))continue;
+   items.push(ch);seen.add(ch.stream);
+   if(items.length>=MAX_CHANNELS)break;
+  }
+  if(items.length>=MAX_CHANNELS)break;
+ }
+ if(items.length<10)throw new Error("No free channels returned");
+ cache={time:Date.now(),data:{channels:items,sourceCounts}};
+ return cache.data;
 }
 export default async function handler(req,res){
  if(req.method!=="GET")return json(res,405,{error:"Method not allowed"});
  if(!valid(req))return json(res,401,{error:"يلزم تسجيل الدخول أولاً."});
  try{
-  const items=await getChannels();
-  return json(res,200,{source:"Free-TV/IPTV",sourceUrl:"https://github.com/Free-TV/IPTV",count:items.length,channels:items,updatedAt:new Date(cache.time).toISOString(),notice:"روابط بث عامة مدرجة بوصفها قنوات مجانية في القائمة الأصلية؛ بعض الروابط قد تكون محجوبة أو لا تسمح بالتشغيل داخل المتصفح. لم تُختبر كل قناة بشكل مستقل."});
+  const result=await getChannels();
+  return json(res,200,{sources:SOURCES.map(s=>({id:s.id,url:s.url})),sourceCounts:result.sourceCounts,count:result.channels.length,channels:result.channels,updatedAt:new Date(cache.time).toISOString(),notice:"عدد الروابط المتاحة من قوائم عامة حتى 4,000. هذه ليست شهادة أنها تعمل جميعًا أو أن أصحابها يسمحون بالتضمين؛ لا تضمن المجانية ولا الإتاحة بالسعودية إلا بعد اختبار المشغّل."});
  }catch(error){
   return json(res,502,{error:"قائمة القنوات المجانية غير متاحة حاليًا؛ جرّب التحديث بعد قليل.",reason:"upstream-unavailable"});
  }
