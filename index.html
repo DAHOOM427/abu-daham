@@ -451,7 +451,7 @@ async function load(){
  if(type!=='free')closeAdVideo();
  if(type!=='channels')closeChannelRoom();
  if(type==='channels'){
-  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();return;
+  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();loadFreeTV();return;
  }
  if(type==='free'){
   $('#freeHub').classList.remove('hidden');
@@ -500,42 +500,119 @@ const officialChannels=[
 const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات أخبار',documentary:'وثائقيات وعلوم',entertainment:'قنوات منوعة',kids:'قنوات أطفال',sports:'قنوات رياضية'};
 let channelCategory='all',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
+
+let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null;
+function allChannels(){return [...freeTVChannels,...officialChannels]}
 function channelLogo(ch){
- return '<span class="ch-brand"><img loading="lazy" alt="" src="https://www.google.com/s2/favicons?sz=64&domain_url='+encodeURIComponent('https://'+ch.host)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji)+'</span></span>';
+ const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
+ return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
+}
+async function loadFreeTV(){
+ if(freeTVPromise)return freeTVPromise;
+ $('#channelDirectoryStatus').textContent='جارٍ جلب قنوات البث المجاني لتشغيلها داخل أبو داحم...';
+ freeTVPromise=api('/api/live-tv').then(d=>{
+  freeTVChannels=Array.isArray(d.channels)?d.channels:[];
+  freeTVChannels.sort((a,b)=>{
+   const rank=x=>(x.country==='SA'?0:x.country==='AE'?1:x.country==='EG'?2:x.country==='KW'?3:x.category==='news'?4:5);
+   return rank(a)-rank(b);
+  });
+  $('#channelDirectoryStatus').textContent=freeTVChannels.length.toLocaleString('ar-SA')+' قناة HLS مدرجة من قائمة Free-TV المجانية. اضغط القناة لتجربة البث مباشرة. ليس كل رابط مضمون العمل أو متاحًا في السعودية؛ قد يمنع الناقل التشغيل داخل المتصفح.';
+  renderChannels();
+ }).catch(e=>{
+  freeTVPromise=null;
+  $('#channelDirectoryStatus').textContent='لم نتمكن من تحميل قائمة القنوات الموسعة حاليًا. القنوات الرسمية الأساسية ما زالت ظاهرة. جرّب إعادة فتح قسم القنوات أو تحديث الصفحة.';
+  renderChannels();
+ });
+ return freeTVPromise;
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search)));
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search)));
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
- $('#channelCount').textContent=filtered.length+' قناة من '+officialChannels.length+' مصدرًا مدرجًا';
- $('#channelGrid').innerHTML=filtered.map(ch=>
+ $('#channelCount').textContent=filtered.length.toLocaleString('ar-SA')+' قناة مطابقة · '+allChannels().length.toLocaleString('ar-SA')+' مدرجة';
+ const shown=filtered.slice(0,channelVisibleCount);
+ $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc)+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category])+'</span><span>المصدر الرسمي</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ شاهد القناة</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.stream?'بث مباشر داخل الموقع':'صفحة الناقل الرسمية')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':'شاهد القناة')+'</button></article>').join('');
+ $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
-function closeChannelRoom(){
+function stopChannelPlayback(){
+ if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
+ if(channelHls){channelHls.destroy();channelHls=null}
+ const video=$('#channelVideoArea video');if(video){video.pause();video.removeAttribute('src');video.load()}
  $('#channelVideoArea').replaceChildren();
+}
+function closeChannelRoom(){
+ stopChannelPlayback();
  currentChannel=null;$('#channelRoom').classList.add('hidden');
 }
+function channelError(text){
+ const box=$('#channelVideoArea');if(!currentChannel)return;
+ const error=document.createElement('div');error.className='ch-video-placeholder';
+ const label=document.createElement('strong');label.textContent='تعذر تشغيل هذه القناة';
+ const msg=document.createElement('p');msg.textContent=text||'البث غير متاح الآن في منطقتك أو لا يسمح خادم القناة بالتشغيل داخل المتصفح. اختر قناة أخرى.';
+ error.append(label,msg);stopChannelPlayback();box.append(error);
+}
+function hlsLibrary(){
+ if(window.Hls)return Promise.resolve(window.Hls);
+ if(channelLibPromise)return channelLibPromise;
+ channelLibPromise=new Promise((resolve,reject)=>{
+  const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js';sc.async=true;sc.crossOrigin='anonymous';
+  sc.onload=()=>window.Hls?resolve(window.Hls):reject(new Error('HLS library unavailable'));
+  sc.onerror=()=>reject(new Error('تعذر تحميل مشغل القنوات من مصدر المكتبة'));
+  document.head.append(sc);
+ }).catch(e=>{channelLibPromise=null;throw e});
+ return channelLibPromise;
+}
+async function openChannelStream(ch){
+ const box=$('#channelVideoArea'),video=document.createElement('video');
+ video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='auto';video.setAttribute('aria-label','البث المباشر: '+ch.name);
+ video.addEventListener('error',()=>{if(currentChannel===ch)channelError('تعذر قراءة بث القناة. قد يكون محجوبًا أو غير متوافق مع المتصفح.')});
+ box.append(video);
+ channelPlayTimeout=setTimeout(()=>{if(currentChannel===ch&&video.readyState<2)channelError('انتهت مهلة انتظار البث. جرّب قناة أخرى.')},23000);
+ const fail=(reason)=>{if(currentChannel===ch)channelError(reason)};
+ if(video.canPlayType('application/vnd.apple.mpegurl')){
+  video.src=ch.stream;video.play().catch(()=>{});return;
+ }
+ try{
+  const Hls=await hlsLibrary();
+  if(currentChannel!==ch)return;
+  if(!Hls.isSupported()){fail('المتصفح لا يدعم بث HLS؛ جرّب متصفحًا حديثًا.');return}
+  const player=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:25});
+  channelHls=player;
+  player.on(Hls.Events.ERROR,(event,data)=>{if(data.fatal){fail('المصدر لم يسمح بتشغيل البث أو توقف اتصال القناة ('+data.type+').')}})
+  player.attachMedia(video);player.on(Hls.Events.MEDIA_ATTACHED,()=>player.loadSource(ch.stream));
+  player.on(Hls.Events.MANIFEST_PARSED,()=>{
+   if(currentChannel!==ch)return;
+   if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
+   video.play().catch(()=>{});
+  });
+ }catch(e){fail('تعذر بدء تشغيل القناة: '+(e.message||'خطأ مجهول'))}
+}
 function openChannelRoom(id){
- const ch=officialChannels.find(x=>x.id===id);if(!ch)return;
- currentChannel=ch;$('#channelRoomTitle').textContent=ch.name;
- $('#channelRoomGroup').textContent=channelCategoryNames[ch.category]+' · مصدر رسمي';
- $('#channelRoomDescription').textContent=ch.desc+' قد تكون هناك إعلانات لدى القناة أو يختلف البث في منطقتك.';
- $('#channelOfficialLink').href=ch.url;
- $('#channelOrigin').textContent=ch.host;
- const box=$('#channelVideoArea');box.replaceChildren();
- if(ch.embed){
-   const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.embed)+'?autoplay=1';iframe.title='بث '+ch.name+' من القناة الرسمية على YouTube';iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.setAttribute('allowfullscreen','');iframe.referrerPolicy='strict-origin-when-cross-origin';box.append(iframe);
+ const ch=allChannels().find(x=>x.id===id);if(!ch)return;
+ stopChannelPlayback();
+ currentChannel=ch;
+ $('#channelRoomTitle').textContent=ch.name;
+ $('#channelRoomGroup').textContent=(channelCategoryNames[ch.category]||'قناة عالمية')+' · '+(ch.stream?'مباشر داخل الموقع':'المصدر الرسمي');
+ $('#channelRoomDescription').textContent=(ch.desc||ch.group||'قناة مجانية')+' · الجودة والإعلانات يحددها صاحب البث.';
+ $('#channelOfficialLink').hidden=!!ch.stream;
+ $('#channelOfficialLink').href=ch.url||'#';
+ $('#channelOrigin').textContent=ch.host||'';
+ const box=$('#channelVideoArea');
+ if(ch.stream){openChannelStream(ch)}
+ else if(ch.embed){
+  const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.embed)+'?autoplay=1';iframe.title='بث '+ch.name;iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.setAttribute('allowfullscreen','');box.append(iframe);
  }else{
-   const div=document.createElement('div');div.className='ch-video-placeholder';
-   div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>المشاهدة متاحة من موقع القناة الرسمي. لا يوجد لدينا إذن موثّق لتضمين بث هذه القناة داخل أبو داحم؛ اضغط زر فتح البث الرسمي أسفل المشغل.';
-   box.append(div);
+  const div=document.createElement('div');div.className='ch-video-placeholder';
+  div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>المصدر الحالي لا يقدّم رابط فيديو مباشر مسموحًا بتشغيله داخل أبو داحم. القنوات ذات زر «شغّل الآن» تفتح داخل الموقع.';box.append(div);
  }
  $('#channelRoom').classList.remove('hidden');$('#channelRoom').scrollIntoView({behavior:'smooth',block:'start'});
 }
-$('#channelSearch').addEventListener('input',()=>renderChannels());
-$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;renderChannels();});
+$('#channelLoadMore').onclick=()=>{channelVisibleCount+=64;renderChannels();};
+$('#channelSearch').addEventListener('input',()=>{channelVisibleCount=64;renderChannels();});
+$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;channelVisibleCount=64;renderChannels();});
 $('#channelGrid').addEventListener('click',e=>{
  const fav=e.target.closest('button[data-favorite]');if(fav){const id=fav.dataset.favorite;if(channelFavorites.has(id))channelFavorites.delete(id);else channelFavorites.add(id);try{localStorage.setItem('abu_daham_channel_favorites_v1',JSON.stringify([...channelFavorites]))}catch{}renderChannels();return}
  const b=e.target.closest('button[data-open-channel]');if(b)openChannelRoom(b.dataset.openChannel);
