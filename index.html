@@ -390,12 +390,13 @@ async function load(){
  if(type!=='kick'){$('#player').removeAttribute('src');$('#frame').classList.add('hidden');$('#kickGuide').classList.add('hidden')}
  $('#sportsPanel').classList.add('hidden');
  $('#freeHub').classList.add('hidden');
- if(type!=='free'){$('#freePlayerPanel').classList.add('hidden');$('#freePlayer').removeAttribute('src')}
- if(type==='free'){
+ if(type!=='free'&&type!=='channels')closeAdVideo();
+ if(type==='free'||type==='channels'){
   $('#freeHub').classList.remove('hidden');
   $('#hero').classList.add('hidden');$('#kick').classList.add('hidden');
   $('#filters').classList.add('hidden');$('.pager').classList.add('hidden');
-  $('#results').innerHTML='';$('#status').textContent='محتوى مجاني يمكن مشاهدته من المصادر الرسمية بشروط تراخيصه.';
+  $('#results').innerHTML='';$('#status').textContent='';
+  adMediaCategory=type==='channels'?'channels':'all';renderAdMedia();
   return
  }
  if(type==='sports'){await loadSports();return}
@@ -413,14 +414,87 @@ $('#sendEmailCode').onclick=async()=>{const b=$('#sendEmailCode');b.disabled=tru
 $('#verifyEmailCode').onclick=async()=>{const b=$('#verifyEmailCode');b.disabled=true;$('#error').textContent='';try{await api('/api/email-login',{method:'POST',body:JSON.stringify({action:'verify',code:$('#emailCodeValue').value})});sessionStorage.setItem('daham_tab_login','1');show();load()}catch(e){$('#error').textContent=e.message}finally{b.disabled=false}};
 (async()=>{try{const x=await api('/api/email-login');$('#sendEmailCode').hidden=!x.enabled;if(x.enabled){$('#code').closest('form').querySelector('button.primary').textContent='الدخول بالرمز الاحتياطي'}}catch(e){}})();
 $('#logout').onclick=async()=>{sessionStorage.removeItem('daham_tab_login');try{await api('/api/logout',{method:'POST'})}catch(e){}gate()};
-$('#freeHub').addEventListener('click',e=>{
- const b=e.target.closest('button[data-free-watch]');if(!b)return;
- const titles={'aqz-KE-bpKQ':'Big Buck Bunny — الأرنب الكبير','OHOpb2fS-cM':'Tears of Steel — دموع الفولاذ','WhWc3b3KhnY':'Spring — الربيع'};
- const id=b.dataset.freeWatch;if(!Object.hasOwn(titles,id))return;
- $('#freeWatchTitle').textContent=titles[id];
- $('#freePlayer').src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0';
- $('#freePlayerPanel').classList.remove('hidden');$('#freePlayerPanel').scrollIntoView({behavior:'smooth',block:'start'});
+
+const adMediaCatalog=[
+ {id:'bbb',title:'Big Buck Bunny — الأرنب الكبير',kind:'animation',label:'رسوم متحركة',year:2008,icon:'🐰',license:'CC BY 3.0',credit:'© 2008 Blender Foundation / www.bigbuckbunny.org — الحقوق وتترات النهاية محفوظة.',sources:[{q:'HD 720p',url:'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4'}],origin:'https://studio.blender.org/films/big-buck-bunny/',licenseUrl:'https://peach.blender.org/about/',archive:'https://archive.org/details/BigBuckBunny_124'},
+ {id:'sintel',title:'Sintel — سينتل',kind:'animation',label:'فيلم رسوم خيالية',year:2010,icon:'🐉',license:'CC BY 3.0',credit:'© Blender Foundation | durian.blender.org — تُعرض شارة النهاية الأصلية كاملة.',sources:[{q:'2K · 2048px',url:'https://archive.org/download/Sintel/sintel-2048-stereo.mp4'}],origin:'https://studio.blender.org/films/sintel/',licenseUrl:'https://durian.blender.org/about/',archive:'https://archive.org/details/Sintel'},
+ {id:'tears',title:'Tears of Steel — دموع الفولاذ',kind:'movie',label:'خيال علمي',year:2012,icon:'🤖',license:'CC BY 3.0',credit:'© Blender Foundation | mango.blender.org — جميع تترات الفيلم باقية كما هي.',sources:[{q:'Full HD 1080p',url:'https://archive.org/download/Tears-of-Steel/tears_of_steel_1080p.mp4'},{q:'HD 720p',url:'https://archive.org/download/Tears-of-Steel/tears_of_steel_720p.mp4'}],origin:'https://studio.blender.org/films/tears-of-steel/',licenseUrl:'https://mango.blender.org/about/',archive:'https://archive.org/details/Tears-of-Steel'},
+ {id:'elephants',title:'Elephants Dream — حلم الفيلة',kind:'animation',label:'رسوم خيالية',year:2006,icon:'🌙',license:'Creative Commons (المصدر)',credit:'© Blender Foundation — عرض النسخة الكاملة وتترات نهاية الفيلم كما هي.',sources:[{q:'HD · نسخة المصدر',url:'https://archive.org/download/ElephantsDream/ed_hd.mp4'}],origin:'https://studio.blender.org/films/elephants-dream/',licenseUrl:'https://archive.org/details/ElephantsDream',archive:'https://archive.org/details/ElephantsDream'}
+];
+const adExternalCollections=[
+ {id:'anime-morevna',title:'Morevna Project — رسوم يابانية مستقلة',kind:'anime',year:'',icon:'🍥',license:'تحقق من شروط كل حلقة',label:'أنمي مستقل',url:'https://morevnaproject.org/anime/episode-3/',credit:'مشاهدة الحلقات على الموقع الرسمي؛ لم يتم إثبات رابط ملف مباشر خالٍ من الإعلانات.'},
+ {id:'series-nasa',title:'NASA+ — وثائقيات وسلاسل علمية',kind:'series',year:'',icon:'🚀',license:'خدمة مجانية رسمية',label:'مسلسلات وثائقية',url:'https://plus.nasa.gov/',credit:'مشاهدة من الخدمة الرسمية؛ تشغيلها داخل أبو داحم يحتاج إذن تضمين منفصل.'},
+ {id:'channel-nasa',title:'NASA+ — برامج وبث فضائي',kind:'channels',year:'',icon:'🛰️',license:'قناة ومحتوى رسمي',label:'علوم وفضاء',url:'https://plus.nasa.gov/',credit:'لا نعيد بث القناة في الموقع. افتح الخدمة الرسمية، وقد تختلف الإتاحة.'},
+ {id:'channel-fifa',title:'FIFA+ — بث رياضي مجاني مختار',kind:'channels',year:'',icon:'⚽',license:'حسب البلد وحقوق النقل',label:'رياضة',url:'https://www.fifa.com/fifaplus',credit:'ليست كل المباريات مجانية أو متاحة في السعودية، ولا يوجد تضمين مباشر مرخّص داخل أبو داحم.'}
+];
+let adMediaCategory='all',adActiveItem=null,adFamilyEntries=[],adLocalCounter=0;
+function adItems(){
+ const local=adFamilyEntries.map(({file,...x})=>x);
+ return [...adMediaCatalog,...local,...adExternalCollections];
+}
+function renderAdMedia(){
+ const all=adItems(),shown=all.filter(x=>adMediaCategory==='all'||adMediaCategory===x.kind||(adMediaCategory==='movie'&&x.kind==='animation'));
+ $('#adMediaFilters').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mediaCategory===adMediaCategory));
+ $('#adMovieGrid').innerHTML=shown.map(x=>'<article class="ad-free-movie" data-kind="'+esc(x.kind)+'"><div class="ad-movie-image">'+esc(x.icon)+'</div><div class="ad-movie-detail"><strong>'+esc(x.title)+'</strong><small>'+esc(x.label)+' · '+esc(x.year||'')+(x.year?' · ':'')+esc(x.license||'')+'</small><div class="ad-movie-metadata"><span>'+esc(x.sources?.length?'بدون إعلان داخل الفيديو':'مصدر رسمي')+'</span>'+(x.sources||[]).map(s=>'<span>'+esc(s.q)+'</span>').join('')+'</div>'+(x.sources?.length?'<button type="button" class="ad-watch-btn" data-ad-watch="'+esc(x.id)+'">▶ شاهد داخل أبو داحم</button>':'<a class="ad-watch-btn" href="'+esc(x.url||'#')+'" rel="noopener noreferrer" target="_blank" style="text-align:center;text-decoration:none">افتح المصدر الرسمي ↗</a>')+'</div></article>').join('');
+ const empty=$('#adFreeEmpty');
+ empty.classList.toggle('hidden',shown.length>0);
+ empty.textContent=adMediaCategory==='family'?'اختر فيلمًا من جهازك ليظهر هنا. لا يُرفع الملف للإنترنت.':adMediaCategory==='anime'?'الأنمي المتاح من الجهات الرسمية قد يحتاج مشغلها الخاص؛ ما أضفنا نسخة كاملة من دون حق تشغيل.':'لا توجد عناصر متاحة لهذا الاختيار حاليًا.';
+}
+function closeAdVideo(){
+ const v=$('#adHtmlVideo');v.pause();v.removeAttribute('src');v.load();
+ adActiveItem=null;$('#adFreePlayerPanel').classList.add('hidden');$('#adPlaybackStatus').textContent='';
+}
+function openAdVideo(item){
+ if(!item?.sources?.length)return;
+ adActiveItem=item;$('#adWatchTitle').textContent=item.title;
+ $('#adQuality').innerHTML=item.sources.map((s,i)=>'<option value="'+i+'">'+esc(s.q)+'</option>').join('');
+ const v=$('#adHtmlVideo');v.pause();v.src=item.sources[0].url;v.load();
+ $('#adPlaybackStatus').textContent='جاهز للتشغيل · الجودة: '+item.sources[0].q;
+ $('#adVideoCredits').textContent=item.credit||'محتوى شخصي من جهازك';
+ $('#adVideoSources').innerHTML=item.kind==='family'?'<span class="ad-video-credits">الملف محفوظ في جهازك ولم يُرفع للموقع.</span>':
+  '<a target="_blank" rel="noopener noreferrer" href="'+esc(item.origin)+'">صفحة المنتج</a><a target="_blank" rel="noopener noreferrer" href="'+esc(item.licenseUrl)+'">الترخيص</a><a target="_blank" rel="noopener noreferrer" href="'+esc(item.archive)+'">رابط نسخة الفيديو</a>';
+ $('#adFreePlayerPanel').classList.remove('hidden');
+ $('#adFreePlayerPanel').scrollIntoView({behavior:'smooth',block:'start'});
+ v.play().catch(()=>{$('#adPlaybackStatus').textContent='اضغط ▶ داخل المشغل لبدء الفيديو'});
+}
+$('#adMediaFilters').addEventListener('click',e=>{
+ const b=e.target.closest('button[data-media-category]');if(!b)return;adMediaCategory=b.dataset.mediaCategory;renderAdMedia();
 });
+$('#adMovieGrid').addEventListener('click',e=>{
+ const b=e.target.closest('button[data-ad-watch]');if(!b)return;
+ const item=adItems().find(x=>x.id===b.dataset.adWatch);if(item)openAdVideo(item);
+});
+$('#adFamilyFiles').addEventListener('change',e=>{
+ for(const file of Array.from(e.target.files||[]).slice(0,40)){
+  if(!file.type.startsWith('video/')&&!/\.(mp4|webm|mov|m4v|mkv)$/i.test(file.name))continue;
+  adFamilyEntries.push({id:'family-'+(++adLocalCounter),file,icon:'🎞️',title:file.name,kind:'family',year:'',label:'فيلم من جهازي',license:'خاص بالعائلة',credit:'فيديو خاص اخترته من جهازك. لم يُرفع إلى الموقع.',sources:[{q:'جودة الملف الأصلية',url:URL.createObjectURL(file)}]});
+ }
+ if(adFamilyEntries.length>40){adFamilyEntries.splice(0,adFamilyEntries.length-40).forEach(x=>URL.revokeObjectURL(x.sources[0].url));}
+ e.target.value='';adMediaCategory='family';renderAdMedia();$('#adMovieGrid').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('#adQuality').addEventListener('change',e=>{
+ if(!adActiveItem)return;
+ const s=adActiveItem.sources[Number(e.target.value)];if(!s)return;
+ const v=$('#adHtmlVideo'),time=v.currentTime||0,wasPlaying=!v.paused;
+ v.src=s.url;v.load();
+ v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(time)&&time>0)try{v.currentTime=Math.min(time,v.duration||time)}catch{}if(wasPlaying)v.play().catch(()=>{})},{once:true});
+ $('#adPlaybackStatus').textContent='الجودة: '+s.q;
+});
+$('#adCloseWatch').onclick=closeAdVideo;
+$('#adFullScreen').onclick=()=>{
+ const v=$('#adHtmlVideo');if(v.requestFullscreen)v.requestFullscreen().catch(()=>{});else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
+};
+$('#adPictureInPicture').onclick=()=>{
+ const v=$('#adHtmlVideo');if(document.pictureInPictureEnabled&&v.requestPictureInPicture)v.requestPictureInPicture().catch(()=>{$('#adPlaybackStatus').textContent='النافذة الصغيرة غير مدعومة لهذا الفيديو'});
+ else $('#adPlaybackStatus').textContent='النافذة الصغيرة غير مدعومة في هذا المتصفح';
+};
+$('#adHtmlVideo').addEventListener('error',()=>{
+ if(!adActiveItem)return;
+ $('#adPlaybackStatus').textContent='تعذر تشغيل الملف في متصفحك. جرّب جودة أخرى أو افتح رابط المصدر الأصلي.';
+});
+window.addEventListener('pagehide',()=>adFamilyEntries.forEach(x=>URL.revokeObjectURL(x.sources[0].url)));
+renderAdMedia();
+
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button[data-type]');if(!b)return;type=b.dataset.type;page=1;document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x===b));load()});
 $('#search').onclick=()=>{page=1;load()};$('#query').addEventListener('keydown',e=>{if(e.key==='Enter'){page=1;load()}});
 $('#yearFilter').onchange=()=>{page=1;load()};$('#refresh').onclick=()=>load();$('#qualityFilter').onchange=()=>{const count=renderResults();if($('#qualityFilter').value&&!count)$('#status').textContent='لا توجد نتائج بجودة '+$('#qualityFilter').value+' مؤكدة من المصدر الحالي.'};
