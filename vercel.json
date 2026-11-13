@@ -32,6 +32,10 @@
     {
       "src": "api/sports-detail.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/live-tv.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -62,6 +66,10 @@
     {
       "src": "^/api/sports-detail/?$",
       "dest": "/api/sports-detail.js"
+    },
+    {
+      "src": "^/api/live-tv/?$",
+      "dest": "/api/live-tv.js"
     },
     {
       "handle": "filesystem"
