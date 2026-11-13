@@ -247,7 +247,7 @@
 <section id="channelHub" class="ch-hub hidden" aria-label="قنوات مجانية رسمية">
  <div class="ch-hero">
   <div class="ch-kicker">ABU DAHAM · LIVE CHANNELS</div>
-  <h2>📡 قنوات أبو داحم المجانية</h2><div class="ch-source-note">الهدف النهائي: 50,000 قناة مجانية. المرحلة الأولى: الوصول إلى 25,000 قناة. «بث مفحوص» يعرض قنوات اختبرنا وصول ملفات الفيديو لها أولًا؛ وباقي القنوات بتبويب «جميع القنوات». العدد المعروض أدناه هو عدد القنوات المدرجة فعليًا من المصادر الحالية، وليس عدد القنوات المضمونة التشغيل.</div>
+  <h2>📡 قنوات أبو داحم المجانية</h2><div class="ch-source-note">الهدف النهائي: 50,000 قناة مجانية. المرحلة الأولى: الوصول إلى 25,000 قناة. «بث مفحوص» يعرض القنوات التي اختبرنا وصول الفيديو لها، وباقي القنوات في «جميع القنوات». برامج الرياضة الرسمية تشمل خيارات مجانية وأخرى باشتراك، وقنوات PBS الأمريكية مقيّدة جغرافيًا. العدد المعروض أدناه هو عدد القنوات المدرجة فعليًا من المصادر الحالية، وليس عدد القنوات المضمونة التشغيل.</div>
   <p>اضغط على القناة وتابع بثها داخل موقع أبو داحم من المشغل المدمج، بدون ما تحتاج تفتح موقع ثاني. القنوات هنا من قوائم البث المجاني العام؛ قد يتوقف بعض البث أو يكون محجوبًا حسب الدولة، ولا توجد ضمانات أن جميع القنوات تدعم المشغل. الإعلانات الخاصة بالناقل مسموحة.</p>
   <div class="ch-hero-tags"><span>مصادر رسمية</span><span>بحث وتصنيفات</span><span>قنواتك المفضلة ♡</span><span>بدون إعلانات من موقعنا</span></div>
  </div>
@@ -522,6 +522,19 @@ $('#logout').onclick=async()=>{sessionStorage.removeItem('daham_tab_login');try{
 
 /* Licensed/free broadcast directory. Do not retransmit third-party streams. */
 const officialChannels=[
+ {"id":"stc-tv-sports","name":"STC TV — الرياضة والبث المباشر","category":"sports","emoji":"📱","host":"web.stctv.com","url":"https://web.stctv.com/sa-ar","desc":"قنوات ومحتوى رياضي رسمي؛ تتوفر باقات مجانية لبعض عملاء stc، وباقات أخرى برسوم. لا يمكن تشغيل محتوى STC TV داخل أبو داحم دون إذن.","kind":"official_only","access":"مجاني لفئات مؤهلة / اشتراك للبقية"},
+ {"id":"bein-sports-1","name":"beIN SPORTS 1","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-2","name":"beIN SPORTS 2","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-3","name":"beIN SPORTS 3","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-4","name":"beIN SPORTS 4","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-5","name":"beIN SPORTS 5","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-6","name":"beIN SPORTS 6","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-7","name":"beIN SPORTS 7","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-8","name":"beIN SPORTS 8","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-9","name":"beIN SPORTS 9","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة رياضية ضمن باقات beIN المدفوعة. هذه ليست beIN SPORTS المفتوحة؛ تعرض البث من الناقل الرسمي بعد الاشتراك حسب حقوق المنطقة.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"bein-sports-4k","name":"beIN 4K","category":"sports","emoji":"🎥","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة 4K ضمن باقات beIN والأجهزة الداعمة؛ ليست مجانية ولا نملك حق تضمين بثها.","kind":"official_only","access":"اشتراك مدفوع"},
+ {"id":"pbs-us-live","name":"PBS — التلفزيون الأمريكي","category":"documentary","emoji":"🇺🇸","host":"pbs.org","url":"https://www.pbs.org/livestream/","desc":"PBS جهة إعلام عامة أمريكية. البث المجاني للمحطات المحلية متاح داخل الولايات المتحدة وأقاليمها فقط؛ غير متاح عادة من السعودية، وليس قناة كورة.","kind":"official_only","access":"بث محلي بأمريكا فقط"},
+ {"id":"pbs-kids-us","name":"PBS KIDS — الأطفال","category":"kids","emoji":"🧸","host":"pbskids.org","url":"https://pbskids.org/videos/watch/live","desc":"برامج أطفال PBS الرسمية. قد تكون المقاطع أو البث غير متاحة خارج الولايات المتحدة بسبب الحقوق الجغرافية.","kind":"official_only","access":"إتاحة جغرافية محدودة"},
  {"id":"thmanyah-free-1","name":"ثمانية 1 — دوري روشن","category":"sports","emoji":"🏆","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"قناة ثمانية الفضائية الأولى مجانية على عرب سات بدر 8؛ المباريات أيضًا في تطبيق ثمانية بباقته المجانية. لا يوجد إذن بتشغيل البث داخل أبو داحم.","kind":"official_only"},
  {"id":"thmanyah-free-2","name":"ثمانية 2 — مباريات متزامنة","category":"sports","emoji":"⚽","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"قناة فضائية مجانية إضافية لمباريات السعودية المتزامنة. تشغيلها داخل أبو داحم يتطلب موافقة مكتوبة من ثمانية.","kind":"official_only"},
  {"id":"thmanyah-free-3","name":"ثمانية 3 — بطولات سعودية","category":"sports","emoji":"🥅","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"القناة الفضائية الثالثة من ثمانية، مجانية على عرب سات. تطبيق ثمانية هو مصدر مشاهدة المباريات عبر الإنترنت.","kind":"official_only"},
@@ -590,7 +603,7 @@ function renderChannels(){
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.checkedServer?'✓ فُحص الوصول للبث':'لم يُفحص البث بعد')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.kind==='official_only'?'مشاهدة مجانية من الناقل ↗':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?'✓ فُحص الوصول للبث':ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
@@ -718,8 +731,8 @@ function openChannelRoom(id){
  stopChannelPlayback();
  currentChannel=ch;
  $('#channelRoomTitle').textContent=ch.name;
- $('#channelRoomGroup').textContent=(channelCategoryNames[ch.category]||'قناة عالمية')+' · '+(ch.stream?'مباشر داخل الموقع':'المصدر الرسمي');
- $('#channelRoomDescription').textContent=(ch.desc||ch.group||'قناة مجانية')+' · الجودة والإعلانات يحددها صاحب البث.';
+ $('#channelRoomGroup').textContent=(channelCategoryNames[ch.category]||'قناة عالمية')+' · '+(ch.stream?'مباشر داخل الموقع':ch.access||'المصدر الرسمي');
+ $('#channelRoomDescription').textContent=(ch.desc||ch.group||'قناة مدرجة')+' · '+(ch.access||'الإتاحة حسب الناقل')+'؛ جودة البث والإعلانات يحددها المصدر.';
  $('#channelOfficialLink').hidden=!ch.url;
  $('#channelOfficialLink').href=ch.url||'#';
  $('#channelOrigin').textContent=ch.host||'';
@@ -729,7 +742,7 @@ function openChannelRoom(id){
   const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.embed)+'?autoplay=1';iframe.title='بث '+ch.name;iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.setAttribute('allowfullscreen','');box.append(iframe);
  }else{
   const div=document.createElement('div');div.className='ch-video-placeholder';
-  div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>هذه قناة مجانية رسمية، لكن الناقل لم يمنح أبو داحم إذنًا موثقًا لتشغيل بثها داخل موقعنا. اضغط رابط الناقل الرسمي أسفل هذه الرسالة للمشاهدة المستقرة من مصدرها. لا ننقل بثًا غير مرخص.';box.append(div);
+  div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>هذه جهة بث رسمية، لكنها لا توفر لنا رابط تشغيل مرخصًا داخل أبو داحم. بعض القنوات تتطلب اشتراكًا أو تمنع البث من السعودية. راجع شروط المشاهدة والإتاحة في موقع الناقل أدناه؛ لا نعيد بث قنوات مدفوعة أو محجوبة.';box.append(div);
  }
  $('#channelRoom').classList.remove('hidden');$('#channelRoom').scrollIntoView({behavior:'smooth',block:'start'});
 }
