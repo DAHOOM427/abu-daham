@@ -186,6 +186,12 @@
 .ch-card .ch-brand img{max-width:36px;max-height:36px}
 .ch-video-area video{width:100%;height:100%;object-fit:contain}
 .ch-watch{cursor:pointer}.ch-room .ch-room-actions{margin-top:12px}
+
+.ch-player-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 4px;font-size:12px;color:#c7dabd}
+.ch-player-controls [role=status]{margin-inline-end:auto;color:#bde69f;font-size:12px;line-height:1.7}
+.ch-player-controls button,.ch-player-controls select{background:#162918;color:#d9f5ce;border:1px solid #476b3d;padding:9px 11px;border-radius:9px;font-size:12px}
+.ch-player-controls select:disabled{opacity:.5}.ch-player-controls button:hover{border-color:#b8f34b}
+@media(max-width:580px){.ch-player-controls{gap:7px}.ch-player-controls [role=status]{width:100%}}
 </style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="free">🎬 مشاهدة بدون إعلانات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section class="targets" aria-label="أهداف مكتبة أبو داحم"><div><strong>359,756</strong><small>هدف الأفلام (غالبًا 90–180 دقيقة)</small></div><div><strong>175,225</strong><small>هدف المسلسلات بمواسمها وحلقاتها</small></div><div><strong>41,537</strong><small>هدف أعمال الأنمي الكاملة</small></div><div><strong>50,000</strong><small>هدف القنوات النهائي · المرحلة الأولى 25,000</small></div><div><strong>626,518</strong><small>إجمالي الأهداف النهائية شامل القنوات</small></div><p><strong>هذه أعداد مستهدفة وليست محتوى متاحًا الآن.</strong> الفيلم غالبًا من ساعة ونصف إلى 3 ساعات؛ الكرتون الطويل من ساعة إلى ساعتين؛ المسلسل الكوميدي 20–30 دقيقة للحلقة؛ الدراما والأكشن والكوري غالبًا 40 دقيقة فأكثر؛ الأنمي غالبًا 20–25 دقيقة للحلقة. عدد الحلقات والمواسم مختلف لكل مسلسل، والمطلوب حلقاته الأصلية كاملة. التصنيف بحسب مدة العمل الفعلية، ولا نعتبر المقاطع القصيرة التجريبية أفلامًا طويلة. الجودة 4K / 2K / HD عند توفر نسخة وحقوق عرض لها.</p></section><section class="filters" id="filters"><label for="yearFilter">سنة الإصدار</label><select id="yearFilter"><option value="">كل السنوات (1985–2026)</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option></select><label for="qualityFilter">الجودة</label><select id="qualityFilter"><option value="">كل الجودات</option><option value="4K">4K</option><option value="2K">2K / QHD</option><option value="HD">HD</option></select><button id="refresh" class="refresh">تحديث النتائج</button></section><div id="status" class="status">اختر قسماً أو اكتب اسم ما تبحث عنه.</div><section id="results" class="grid"></section><div class="pager"><button id="prevPage" disabled>السابق</button><span id="pageLabel" class="muted">صفحة 1</span><button id="nextPage">التالي</button></div><div id="detail" class="detail-backdrop hidden"><article class="detail-panel"><button id="detailClose" class="detail-close">إغلاق ✕</button><div id="detailBody"></div></article></div><section id="sportsPanel" class="sports-panel sports-hub hidden">
  <div class="sports-hub-header">
   <div><div class="sports-kicker">ABU DAHAM · SPORTS CENTER</div><h2>مركز المباريات والنتائج</h2><p>نتائج ومواعيد وترتيب الأندية والبطولات</p></div>
@@ -251,6 +257,12 @@
  <div id="channelRoom" class="ch-room hidden">
   <div class="ch-room-top"><div><small id="channelRoomGroup">القنوات الرسمية</small><h3 id="channelRoomTitle">القناة</h3></div><button type="button" class="ch-close" id="channelClose">✕ إغلاق</button></div>
   <div id="channelVideoArea" class="ch-video-area"></div>
+  <div class="ch-player-controls" id="channelPlayerControls">
+   <span id="channelPlaybackState" role="status" aria-live="polite">اختر قناة للبدء</span>
+   <label>الجودة <select id="channelStreamQuality" aria-label="جودة بث القناة" disabled><option value="-1">تلقائي</option></select></label>
+   <button id="channelGoLive" type="button" title="العودة إلى آخر نقطة في البث المباشر">● إلى المباشر</button>
+   <button id="channelReconnect" type="button" title="إعادة محاولة الاتصال بالقناة">↻ إعادة الاتصال</button>
+  </div>
   <p id="channelRoomDescription" class="ch-room-description"></p>
   <div class="ch-room-actions"><a id="channelOfficialLink" rel="noopener noreferrer" target="_blank">▶ فتح البث من المصدر الرسمي</a><span id="channelOrigin"></span></div>
  </div>
@@ -480,6 +492,8 @@ $('#logout').onclick=async()=>{sessionStorage.removeItem('daham_tab_login');try{
 
 /* Licensed/free broadcast directory. Do not retransmit third-party streams. */
 const officialChannels=[
+ {id:'dw-arabic-verified',name:'DW عربية — بث مباشر',category:'news',emoji:'🌍',host:'dw.com',url:'https://www.dw.com/ar/',desc:'تلفزيون دويتشه فيله العربي · بث مجاني من خادم القناة الرسمي، وقد تختلف الإتاحة.',stream:'https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
+ {id:'dw-english-verified',name:'DW English — Live',category:'news',emoji:'📺',host:'dw.com',url:'https://www.dw.com/en/',desc:'قناة دويتشه فيله الدولية · مباشر مجاني من شبكة القناة.',stream:'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8',quality:'تلقائي',source:'official DW CDN'},
  {id:'ksa-quran',name:'قناة القرآن الكريم',category:'islamic',emoji:'🕋',host:'aloula.sba.sa',url:'https://www.youtube.com/watch?v=kYqGbBqmp8g',home:'https://aloula.sba.sa/live/quran',desc:'البث الرسمي من مكة المكرمة التابع لهيئة الإذاعة والتلفزيون السعودية.',embed:'kYqGbBqmp8g'},
  {id:'ksa-sunnah',name:'قناة السنة النبوية',category:'islamic',emoji:'🕌',host:'aloula.sba.sa',url:'https://www.youtube.com/watch?v=_XKTQFrEGUI',home:'https://aloula.sba.sa/',desc:'البث الرسمي من المسجد النبوي بالمدينة المنورة.',embed:'_XKTQFrEGUI'},
  {id:'saudi-tv',name:'قنوات السعودية — الأولى',category:'entertainment',emoji:'🇸🇦',host:'aloula.sba.sa',url:'https://aloula.sba.sa/',desc:'مباشر وقنوات وبرامج هيئة الإذاعة والتلفزيون، حسب ما تعرضه المنصة.'},
@@ -501,8 +515,8 @@ const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات
 let channelCategory='all',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
-let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null;
-function allChannels(){return [...freeTVChannels,...officialChannels]}
+let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=64,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0;
+function allChannels(){return [...officialChannels.filter(x=>x.stream),...freeTVChannels,...officialChannels.filter(x=>!x.stream)]}
 function channelLogo(ch){
  const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
  return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
@@ -537,58 +551,112 @@ function renderChannels(){
  $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
+
+function channelState(message){
+ const el=$('#channelPlaybackState');if(el)el.textContent=message;
+}
 function stopChannelPlayback(){
+ channelGeneration++;
  if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
  if(channelHls){channelHls.destroy();channelHls=null}
  const video=$('#channelVideoArea video');if(video){video.pause();video.removeAttribute('src');video.load()}
  $('#channelVideoArea').replaceChildren();
+ $('#channelStreamQuality').innerHTML='<option value="-1">تلقائي</option>';
+ $('#channelStreamQuality').disabled=true;
 }
 function closeChannelRoom(){
- stopChannelPlayback();
- currentChannel=null;$('#channelRoom').classList.add('hidden');
+ stopChannelPlayback();currentChannel=null;$('#channelRoom').classList.add('hidden');channelState('اختر قناة للبدء');
 }
-function channelError(text){
+function channelError(message){
  const box=$('#channelVideoArea');if(!currentChannel)return;
- const error=document.createElement('div');error.className='ch-video-placeholder';
+ stopChannelPlayback();
+ const block=document.createElement('div');block.className='ch-video-placeholder';
  const label=document.createElement('strong');label.textContent='تعذر تشغيل هذه القناة';
- const msg=document.createElement('p');msg.textContent=text||'البث غير متاح الآن في منطقتك أو لا يسمح خادم القناة بالتشغيل داخل المتصفح. اختر قناة أخرى.';
- error.append(label,msg);stopChannelPlayback();box.append(error);
+ const info=document.createElement('p');info.textContent=message||'مصدر البث متوقف أو محجوب في بلدك أو لا يسمح بالتشغيل من موقع آخر. جرّب قناة ثانية.';
+ block.append(label,info);box.append(block);
+ channelState('تعذر التشغيل · جرّب إعادة الاتصال أو قناة أخرى');
 }
 function hlsLibrary(){
  if(window.Hls)return Promise.resolve(window.Hls);
  if(channelLibPromise)return channelLibPromise;
  channelLibPromise=new Promise((resolve,reject)=>{
-  const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js';sc.async=true;sc.crossOrigin='anonymous';
-  sc.onload=()=>window.Hls?resolve(window.Hls):reject(new Error('HLS library unavailable'));
-  sc.onerror=()=>reject(new Error('تعذر تحميل مشغل القنوات من مصدر المكتبة'));
-  document.head.append(sc);
+  const sources=['https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js','https://unpkg.com/hls.js@1.5.17/dist/hls.min.js'];
+  const tryNext=i=>{
+   if(i===sources.length){reject(new Error('تعذر تحميل مكتبة البث من الشبكة'));return}
+   const sc=document.createElement('script');sc.src=sources[i];sc.async=true;sc.crossOrigin='anonymous';
+   sc.onload=()=>window.Hls?resolve(window.Hls):tryNext(i+1);
+   sc.onerror=()=>{sc.remove();tryNext(i+1)};
+   document.head.append(sc);
+  };tryNext(0);
  }).catch(e=>{channelLibPromise=null;throw e});
  return channelLibPromise;
 }
+function setupChannelQuality(player){
+ const select=$('#channelStreamQuality');
+ const levels=player.levels||[];
+ select.innerHTML='<option value="-1">تلقائي (أنسب سرعة)</option>'+levels.map((level,i)=>{
+  const label=level.height?level.height+'p':level.bitrate?Math.round(level.bitrate/1000)+' kbps':'جودة '+(i+1);
+  return '<option value="'+i+'">'+esc(label)+'</option>';
+ }).join('');
+ select.disabled=!levels.length;
+ select.value='-1';
+}
 async function openChannelStream(ch){
- const box=$('#channelVideoArea'),video=document.createElement('video');
- video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='auto';video.setAttribute('aria-label','البث المباشر: '+ch.name);
- video.addEventListener('error',()=>{if(currentChannel===ch)channelError('تعذر قراءة بث القناة. قد يكون محجوبًا أو غير متوافق مع المتصفح.')});
+ const box=$('#channelVideoArea'),generation=channelGeneration;
+ const video=document.createElement('video');
+ video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='auto';
+ video.setAttribute('aria-label','البث المباشر: '+ch.name);
+ video.addEventListener('playing',()=>{
+  if(generation!==channelGeneration)return;
+  if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
+  channelState('● مباشر · جودة تلقائية لتقليل التقطيع');
+ });
+ video.addEventListener('waiting',()=>{if(generation===channelGeneration)channelState('جارٍ تخزين البث مؤقتًا...')});
+ video.addEventListener('stalled',()=>{if(generation===channelGeneration)channelState('ضعف الاتصال بالمصدر · يمكنك إعادة الاتصال')});
+ video.addEventListener('error',()=>{if(generation===channelGeneration)channelError('تعذر قراءة الفيديو أو السماح بالاتصال في متصفحك. جرّب قناة أخرى.')});
  box.append(video);
- channelPlayTimeout=setTimeout(()=>{if(currentChannel===ch&&video.readyState<2)channelError('انتهت مهلة انتظار البث. جرّب قناة أخرى.')},23000);
- const fail=(reason)=>{if(currentChannel===ch)channelError(reason)};
+ channelState('جارٍ الاتصال بخادم القناة...');
+ channelPlayTimeout=setTimeout(()=>{
+  if(generation===channelGeneration&&video.readyState<3)channelError('تأخر بدء البث من المصدر أكثر من 25 ثانية. اختر قناة أخرى أو حاول مجددًا.');
+ },25000);
+ const fail=reason=>{if(generation===channelGeneration)channelError(reason)};
  if(video.canPlayType('application/vnd.apple.mpegurl')){
-  video.src=ch.stream;video.play().catch(()=>{});return;
+  video.src=ch.stream;video.play().catch(()=>channelState('اضغط ▶ داخل المشغل لبدء القناة'));return;
  }
  try{
   const Hls=await hlsLibrary();
-  if(currentChannel!==ch)return;
-  if(!Hls.isSupported()){fail('المتصفح لا يدعم بث HLS؛ جرّب متصفحًا حديثًا.');return}
-  const player=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:25});
-  channelHls=player;
-  player.on(Hls.Events.ERROR,(event,data)=>{if(data.fatal){fail('المصدر لم يسمح بتشغيل البث أو توقف اتصال القناة ('+data.type+').')}})
-  player.attachMedia(video);player.on(Hls.Events.MEDIA_ATTACHED,()=>player.loadSource(ch.stream));
-  player.on(Hls.Events.MANIFEST_PARSED,()=>{
-   if(currentChannel!==ch)return;
-   if(channelPlayTimeout){clearTimeout(channelPlayTimeout);channelPlayTimeout=null}
-   video.play().catch(()=>{});
+  if(generation!==channelGeneration||currentChannel!==ch)return;
+  if(!Hls.isSupported()){fail('المتصفح لا يدعم بث HLS. جرّب Safari أو Chrome حديثًا.');return}
+  const player=new Hls({
+   enableWorker:true,
+   lowLatencyMode:true,
+   liveSyncDurationCount:3,
+   liveMaxLatencyDurationCount:9,
+   maxLiveSyncPlaybackRate:1.05,
+   maxBufferLength:18,
+   backBufferLength:20,
+   capLevelToPlayerSize:true,
+   capLevelOnFPSDrop:true,
+   startLevel:-1
   });
- }catch(e){fail('تعذر بدء تشغيل القناة: '+(e.message||'خطأ مجهول'))}
+  channelHls=player;
+  player.on(Hls.Events.ERROR,(event,data)=>{
+   if(data.fatal)fail('مصدر القناة لا يسمح بالتشغيل أو توقف: '+(data.details||data.type||'خطأ بث'));
+  });
+  player.on(Hls.Events.MANIFEST_PARSED,()=>{
+   if(generation!==channelGeneration)return;
+   setupChannelQuality(player);
+   channelState('جارٍ تجهيز جودة البث المناسبة...');
+   video.play().catch(()=>channelState('اضغط ▶ داخل المشغل لبدء القناة'));
+  });
+  player.on(Hls.Events.LEVEL_SWITCHED,()=>{
+   if(generation===channelGeneration&&video.readyState>=3){
+    const level=player.levels?.[player.currentLevel],height=level?.height;
+    channelState('● مباشر'+(height?' · '+height+'p':'')+' · الجودة '+(player.autoLevelEnabled?'تلقائية':'مختارة'));
+   }
+  });
+  player.attachMedia(video);player.on(Hls.Events.MEDIA_ATTACHED,()=>player.loadSource(ch.stream));
+ }catch(e){fail('تعذر بدء مشغل القناة: '+(e.message||'خطأ غير معروف'))}
 }
 function openChannelRoom(id){
  const ch=allChannels().find(x=>x.id===id);if(!ch)return;
@@ -597,7 +665,7 @@ function openChannelRoom(id){
  $('#channelRoomTitle').textContent=ch.name;
  $('#channelRoomGroup').textContent=(channelCategoryNames[ch.category]||'قناة عالمية')+' · '+(ch.stream?'مباشر داخل الموقع':'المصدر الرسمي');
  $('#channelRoomDescription').textContent=(ch.desc||ch.group||'قناة مجانية')+' · الجودة والإعلانات يحددها صاحب البث.';
- $('#channelOfficialLink').hidden=!!ch.stream;
+ $('#channelOfficialLink').hidden=!ch.url;
  $('#channelOfficialLink').href=ch.url||'#';
  $('#channelOrigin').textContent=ch.host||'';
  const box=$('#channelVideoArea');
@@ -617,6 +685,26 @@ $('#channelGrid').addEventListener('click',e=>{
  const fav=e.target.closest('button[data-favorite]');if(fav){const id=fav.dataset.favorite;if(channelFavorites.has(id))channelFavorites.delete(id);else channelFavorites.add(id);try{localStorage.setItem('abu_daham_channel_favorites_v1',JSON.stringify([...channelFavorites]))}catch{}renderChannels();return}
  const b=e.target.closest('button[data-open-channel]');if(b)openChannelRoom(b.dataset.openChannel);
 });
+
+$('#channelReconnect').onclick=()=>{
+ const ch=currentChannel;if(!ch)return;
+ stopChannelPlayback();if(ch.stream)openChannelStream(ch);else openChannelRoom(ch.id);
+};
+$('#channelGoLive').onclick=()=>{
+ const video=$('#channelVideoArea video');if(!video){channelState('هذا المصدر لا يحتوي على مشغل مباشر داخل الصفحة');return}
+ try{
+  if(channelHls&&Number.isFinite(channelHls.liveSyncPosition))video.currentTime=channelHls.liveSyncPosition;
+  else if(video.seekable.length)video.currentTime=Math.max(video.seekable.start(video.seekable.length-1),video.seekable.end(video.seekable.length-1)-4);
+  video.play().catch(()=>{});
+  channelState('الانتقال إلى أحدث نقطة متاحة في البث...');
+ }catch{channelState('لم يمكن الوصول إلى أحدث نقطة للبث')}
+};
+$('#channelStreamQuality').onchange=()=>{
+ if(!channelHls)return;
+ const value=Number($('#channelStreamQuality').value);
+ channelHls.currentLevel=value;
+ channelState(value===-1?'جودة تلقائية لتقليل التقطيع':'تم اختيار جودة محددة · لو صار تقطيع استخدم تلقائي');
+};
 $('#channelClose').onclick=closeChannelRoom;
 renderChannels();
 
