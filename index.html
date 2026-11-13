@@ -216,6 +216,8 @@
  <div class="sports-splash-side"><h4>📡 القنوات الرسمية</h4>
   <p>اختر مباراتك لعرض صفحة المشاهدة داخل الموقع. إذا لم يسمح الناقل بالتضمين، نعرض لك رابطه الرسمي.</p>
   <a class="sports-broadcaster" href="https://app.thmanyah.com/" target="_blank" rel="noopener"><span><strong>ثمانية · الدوري السعودي</strong><small>الناقل الرسمي – بث مجاني بإعلانات حسب الباقة</small></span><span>↗</span></a>
+  <a class="sports-broadcaster" href="https://www.bein.com/ar/" target="_blank" rel="noopener"><span><strong>beIN SPORTS · القناة المفتوحة</strong><small>قناة مجانية رسمية، لا تشمل كل المباريات المدفوعة</small></span><span>↗</span></a>
+  <a class="sports-broadcaster" href="https://www.bein.com/ar/" target="_blank" rel="noopener"><span><strong>beIN SPORTS NEWS · أخبار رياضية</strong><small>قناة إخبارية رياضية مجانية رسمية</small></span><span>↗</span></a>
   <a class="sports-broadcaster" href="https://www.fifa.com/fifaplus" target="_blank" rel="noopener"><span><strong>FIFA+ · مباريات مجانية مختارة</strong><small>المتاح يتغير حسب بلدك وحقوق النقل</small></span><span>↗</span></a>
  </div>
 </div>
@@ -520,6 +522,11 @@ $('#logout').onclick=async()=>{sessionStorage.removeItem('daham_tab_login');try{
 
 /* Licensed/free broadcast directory. Do not retransmit third-party streams. */
 const officialChannels=[
+ {"id":"thmanyah-free-1","name":"ثمانية 1 — دوري روشن","category":"sports","emoji":"🏆","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"قناة ثمانية الفضائية الأولى مجانية على عرب سات بدر 8؛ المباريات أيضًا في تطبيق ثمانية بباقته المجانية. لا يوجد إذن بتشغيل البث داخل أبو داحم.","kind":"official_only"},
+ {"id":"thmanyah-free-2","name":"ثمانية 2 — مباريات متزامنة","category":"sports","emoji":"⚽","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"قناة فضائية مجانية إضافية لمباريات السعودية المتزامنة. تشغيلها داخل أبو داحم يتطلب موافقة مكتوبة من ثمانية.","kind":"official_only"},
+ {"id":"thmanyah-free-3","name":"ثمانية 3 — بطولات سعودية","category":"sports","emoji":"🥅","host":"app.thmanyah.com","url":"https://app.thmanyah.com/","desc":"القناة الفضائية الثالثة من ثمانية، مجانية على عرب سات. تطبيق ثمانية هو مصدر مشاهدة المباريات عبر الإنترنت.","kind":"official_only"},
+ {"id":"bein-sports-fta","name":"beIN SPORTS — المفتوحة","category":"sports","emoji":"🏟️","host":"bein.com","url":"https://www.bein.com/ar/","desc":"beIN تؤكد أنها قناة مفتوحة ومجانية عبر قنواتها الرسمية، لكن لا تنقل جميع مباريات الشبكة المدفوعة.","kind":"official_only"},
+ {"id":"bein-sports-news-fta","name":"beIN SPORTS NEWS — المفتوحة","category":"sports","emoji":"📣","host":"bein.com","url":"https://www.bein.com/ar/","desc":"قناة الأخبار الرياضية المجانية المعلنة رسميًا من beIN. لا تتوفر لدينا رخصة إعادة بثها داخل أبو داحم.","kind":"official_only"},
  {"id":"v-aljazeera-ar","name":"الجزيرة الإخبارية","category":"news","emoji":"🌍","host":"aljazeera.net","url":"https://www.aljazeera.net/video/live","stream":"https://live-hls-apps-aja-fa.getaj.net/AJA/index.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
  {"id":"v-france24-ar","name":"فرانس 24 بالعربية","category":"news","emoji":"🇫🇷","host":"france24.com","url":"https://www.france24.com/ar/live","stream":"https://live.france24.com/hls/live/2037222-b/F24_AR_HI_HLS/master_5000.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
  {"id":"v-asharq-news","name":"الشرق للأخبار","category":"news","emoji":"📈","host":"asharq.com","url":"https://now.asharq.com/live/","stream":"https://live-news.asharq.com/asharq.m3u8","checkedServer":true,"desc":"بث مجاني من خادم القناة؛ نجح اختبار اتصال البث وأجزاء الفيديو، لكن إتاحته في كل جهاز أو بلد غير مضمونة."},
@@ -577,13 +584,13 @@ async function loadFreeTV(){
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search)));
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
  $('#channelCount').textContent=filtered.length.toLocaleString('ar-SA')+' قناة مطابقة · '+allChannels().length.toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.checkedServer?'✓ فُحص الوصول للبث':'لم يُفحص البث بعد')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.checkedServer?'✓ فُحص الوصول للبث':'لم يُفحص البث بعد')+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.kind==='official_only'?'مشاهدة مجانية من الناقل ↗':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',filtered.length<=channelVisibleCount);
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
 }
@@ -722,7 +729,7 @@ function openChannelRoom(id){
   const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.embed)+'?autoplay=1';iframe.title='بث '+ch.name;iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.setAttribute('allowfullscreen','');box.append(iframe);
  }else{
   const div=document.createElement('div');div.className='ch-video-placeholder';
-  div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>المصدر الحالي لا يقدّم رابط فيديو مباشر مسموحًا بتشغيله داخل أبو داحم. القنوات ذات زر «شغّل الآن» تفتح داخل الموقع.';box.append(div);
+  div.innerHTML='<strong>📺 '+esc(ch.name)+'</strong>هذه قناة مجانية رسمية، لكن الناقل لم يمنح أبو داحم إذنًا موثقًا لتشغيل بثها داخل موقعنا. اضغط رابط الناقل الرسمي أسفل هذه الرسالة للمشاهدة المستقرة من مصدرها. لا ننقل بثًا غير مرخص.';box.append(div);
  }
  $('#channelRoom').classList.remove('hidden');$('#channelRoom').scrollIntoView({behavior:'smooth',block:'start'});
 }
