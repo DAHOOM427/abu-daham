@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="أبو داحم AD">
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#080d0a" stroke="#b8f34b" stroke-width="7"/>
+  <path d="M23 95L46 35h11l22 60h-13l-5-14H42l-5 14H23zm22-25h13l-6-20-7 20z" fill="#b8f34b"/>
+  <path d="M78 35h13c18 0 28 12 28 30s-10 30-28 30H78V35zm13 12v36c11 0 16-6 16-18s-5-18-16-18z" fill="#b8f34b"/>
+</svg>
