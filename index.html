@@ -676,7 +676,7 @@ async function loadChannelHealth(force=false){
 }
 function channelLogo(ch){
  const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
- return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
+ return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.classList.remove(\'hidden\')"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
 }
 async function loadFreeTV(append=false){
  if(append&&freeTVLoading)return;
@@ -696,7 +696,7 @@ async function loadFreeTV(append=false){
   freeTVMatchCount=Number(d.count)||0;
   freeTVHasMore=Boolean(d.hasMore);
   channelVisibleCount=Math.max(180,freeTVChannels.length+officialChannels.length);
-  $('#channelDirectoryStatus').textContent='فهرس البث: '+freeTVTotal.toLocaleString('ar-SA')+' رابط مُدرج، تحميل '+freeTVChannels.length.toLocaleString('ar-SA')+' بالتدريج. بعض الروابط غير مفحوصة، وليس كل رابط يعمل أو يسمح بالتضمين. اختر «✓ بث مفحوص» للقنوات التي اختُبر وصول الفيديو لها.';
+  $('#channelDirectoryStatus').textContent='فهرس البث: '+freeTVTotal.toLocaleString('ar-SA')+' رابط مُدرج، تحميل '+freeTVChannels.length.toLocaleString('ar-SA')+' بالتدريج. بعض الروابط غير مفحوصة، وليس كل رابط يعمل أو يسمح بالتضمين. اختر «✓ بث مفحوص» للقنوات التي استجابت قائمة بثها في الفحص؛ ذلك لا يضمن تشغيل الفيديو.';
   renderChannels();
  }).catch(()=>{
   if(seq!==freeTVSeq)return;
@@ -707,17 +707,24 @@ async function loadFreeTV(append=false){
  freeTVPromise=running;
  return running;
 }
+function channelPriority(ch){
+ const reachable=channelHealth[ch.id]?.manifestReachable;
+ if(reachable===false)return 3;
+ if(reachable===true&&(ch.stream||ch.embed))return 0;
+ if(ch.stream||ch.embed)return 1;
+ return 2;
+}
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable!==false):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable===true):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelPriority(a)-channelPriority(b));
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
- const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable!==false):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
+ const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable===true):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
  const totalMatches=['verified','favorites'].includes(channelCategory)?filtered.length:officialCount+freeTVMatchCount;
  $('#channelCount').textContent=totalMatches.toLocaleString('ar-SA')+' مطابقة · '+(freeTVTotal+officialChannels.length).toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?(channelHealth[ch.id]?.manifestReachable===true?(channelHealth[ch.id]?.browserCors?'✓ المصدر متاح الآن':'✓ وصول الخادم · المتصفح قد يختلف'):channelHealth[ch.id]?.manifestReachable===false?'⚠ تعذر اتصال البث':'✓ فحص سابق'):ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?(channelHealth[ch.id]?.manifestReachable===true?(channelHealth[ch.id]?.browserCors?'✓ المصدر متاح الآن':'✓ وصول الخادم · المتصفح قد يختلف'):channelHealth[ch.id]?.manifestReachable===false?'⚠ تعذر اتصال البث':'لم يكتمل الفحص'):ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',(!freeTVHasMore&&filtered.length<=channelVisibleCount)||['verified','favorites'].includes(channelCategory));
  $('#channelLoadMore').textContent=freeTVHasMore?'عرض 120 قناة أخرى':'عرض المزيد';
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
