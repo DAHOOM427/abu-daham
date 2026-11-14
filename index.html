@@ -706,7 +706,7 @@ function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
  const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable!==false):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
- const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
+ const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable!==false):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
  const totalMatches=['verified','favorites'].includes(channelCategory)?filtered.length:officialCount+freeTVMatchCount;
  $('#channelCount').textContent=totalMatches.toLocaleString('ar-SA')+' مطابقة · '+(freeTVTotal+officialChannels.length).toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
