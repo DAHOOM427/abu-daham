@@ -234,13 +234,17 @@
 .ad-discover-shortcuts{display:flex;gap:12px;flex-wrap:wrap}
 .ad-discover-shortcuts button{background:#1c3020;border:1px solid #5d8858;border-radius:12px;color:#c9f3bb;padding:14px;cursor:pointer;font-weight:700}
 @media(max-width:600px){.ad-discover-hero{padding:18px 13px}.ad-discover-modes button{flex:1 1 100%;text-align:right}.ad-discover-search{flex-direction:column}.ad-discover-search input,.ad-discover-search select,.ad-discover-search button{width:100%;box-sizing:border-box}.ad-discover-results{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}}
+
+.ad-open-note{border:1px solid #486e44;background:#17291a;border-radius:15px;padding:15px;margin:13px 0 18px}
+.ad-open-note strong{color:#c9f7ae;font-size:16px}.ad-open-note p{color:#bdd2b7;font-size:12px;line-height:1.8;margin:8px 0}
+.ad-open-note span{color:#c6dfa9;font-size:11px;display:block;margin:10px 0}.ad-open-note button{background:#233c29;border:1px solid #5c8853;border-radius:10px;padding:8px 13px;color:#e3f4d6;cursor:pointer}
 </style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="discover">🔎 اكتشف وشاهد</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="free">🎬 مشاهدة بدون إعلانات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section id="discoverHub" class="ad-discover hidden" aria-label="اكتشاف المحتوى والمباريات داخل أبو داحم">
  <div class="ad-discover-hero">
   <span>ABU DAHAM · DISCOVER & WATCH</span>
   <h2>🔎 اكتشف وشاهد داخل أبو داحم</h2>
   <p>دليل بحث للأفلام والمسلسلات والأنمي، ومركز للمباريات والقنوات — في موقعك نفسه وبدون إعلانات يضيفها أبو داحم. هذا تصميم مستقل، وليس دمجًا رسميًا لبيانات JustWatch أو Live Soccer TV.</p>
   <div class="ad-discover-modes" id="adDiscoverModes">
-   <button type="button" data-discover-mode="catalog" class="selected">🎬 دليل الأفلام والمسلسلات</button>
+   <button type="button" data-discover-mode="catalog" class="selected">🎬 دليل الأفلام والمسلسلات</button><button type="button" data-discover-mode="latest">✨ جديد في الفهرس</button><button type="button" data-discover-mode="open">▶ أفلام مجانية قابلة للتشغيل</button>
    <button type="button" data-discover-mode="sports">⚽ دليل الكورة والمباريات</button>
    <button type="button" data-discover-mode="channels">📡 قنوات قابلة للتشغيل</button>
   </div>
@@ -348,6 +352,7 @@
   <p>مواصفاتنا: أفلام من ساعة ونصف إلى 3 ساعات غالبًا، وكرتون طويل من ساعة إلى ساعتين، ومسلسلات كوميدية بحلقات 20–30 دقيقة، ودراما وأكشن وكوري بحلقات 40 دقيقة فأكثر غالبًا، وأنمي بحلقات 20–25 دقيقة. كل مسلسل وأنمي بمواسمه وحلقاته الأصلية كاملة؛ عدد الحلقات يختلف من عمل لآخر. المقاطع التجريبية القصيرة ليست بديلًا عن المكتبة. المشغل الداخلي بدون إعلانات من أبو داحم، لكن المكتبة الطويلة المرخّصة لم تكتمل بعد. تقدر الآن تشغّل أفلامك الشخصية من جهازك، والمقاطع القصيرة متاحة فقط لاختبار المشغل إذا طلبتها.</p>
   <div class="ad-daham-stats"><span>✓ مجاني</span><span>✓ تشغيل داخل الموقع</span><span>✓ بدون إعلانات منا</span><span>✓ الجودة حسب الملف</span></div>
  </div>
+ <div class="ad-open-note" id="adOpenNote"><strong>✨ أفلام مرخّصة تُضاف تلقائيًا</strong><p>نحدّث أفلام Blender المفتوحة الترخيص كل 6 ساعات من Wikimedia Commons. تشغيل الفيديو من مصدره دون تحميل الملفات على خادم أبو داحم، مع إظهار حقوق العمل. هذه أفلام قصيرة وليست مكتبة جميع الأفلام التجارية.</p><span id="adOpenStatus">جارٍ تجهيز المصدر المفتوح...</span><button type="button" id="adOpenRefresh">↻ تحديث القائمة</button></div>
  <div class="ad-family-upload">
   <div><h3>📂 أفلام العائلة الخاصة</h3><p>اختر مقاطع من جهازك وتشاهدها داخل الموقع بدون رفعها للإنترنت. يدعم MP4 وWebM والفيديوهات التي يفكها متصفحك. الملفات تختفي من القائمة عند إغلاق التبويب.</p></div>
   <label class="ad-upload-label" for="adFamilyFiles">＋ اختيار أفلام من جهازي</label>
@@ -567,7 +572,7 @@ async function load(){
   $('#hero').classList.add('hidden');$('#kick').classList.add('hidden');
   $('#filters').classList.add('hidden');$('.pager').classList.add('hidden');
   $('#results').innerHTML='';$('#status').textContent='';
-  adMediaCategory='all';renderAdMedia();
+  adMediaCategory='all';renderAdMedia();loadOpenMedia();
   return
  }
  if(type==='sports'){await loadSports();return}
@@ -890,11 +895,26 @@ const adExternalCollections=[
  {id:'channel-nasa',title:'NASA+ — برامج وبث فضائي',kind:'channels',year:'',icon:'🛰️',license:'قناة ومحتوى رسمي',label:'علوم وفضاء',url:'https://plus.nasa.gov/',credit:'لا نعيد بث القناة في الموقع. افتح الخدمة الرسمية، وقد تختلف الإتاحة.'},
  {id:'channel-fifa',title:'FIFA+ — بث رياضي مجاني مختار',kind:'channels',year:'',icon:'⚽',license:'حسب البلد وحقوق النقل',label:'رياضة',url:'https://www.fifa.com/fifaplus',credit:'ليست كل المباريات مجانية أو متاحة في السعودية، ولا يوجد تضمين مباشر مرخّص داخل أبو داحم.'}
 ];
-let adMediaCategory='all',adActiveItem=null,adFamilyEntries=[],adLocalCounter=0,adShowDemos=false;
+let adMediaCategory='all',adActiveItem=null,adFamilyEntries=[],adLocalCounter=0,adShowDemos=false,adOpenMedia=[],adOpenMediaPromise=null;
 function adItems(){
  const local=adFamilyEntries.map(({file,...x})=>x);
- return [...(adShowDemos?adMediaCatalog:[]),...local,...adExternalCollections];
+ return [...adOpenMedia,...(adShowDemos?adMediaCatalog:[]),...local,...adExternalCollections];
 }
+async function loadOpenMedia(force=false){
+ if(adOpenMediaPromise&&!force)return adOpenMediaPromise;
+ $('#adOpenStatus').textContent='جارٍ تحديث مصدر الأفلام المرخّصة...';
+ adOpenMediaPromise=api('/api/open-media').then(d=>{
+  adOpenMedia=Array.isArray(d.items)?d.items.filter(x=>x.sources?.length&&x.licenseUrl):[];
+  $('#adOpenStatus').textContent=adOpenMedia.length.toLocaleString('ar-SA')+' فيديو مرخّص مدرج · آخر مزامنة: '+new Date(d.updatedAt).toLocaleString('ar-SA');
+  renderAdMedia();
+  return adOpenMedia;
+ }).catch(e=>{
+  $('#adOpenStatus').textContent='لم نستطع تحديث الأفلام المفتوحة حاليًا: '+(e.message||'حاول لاحقًا');
+  renderAdMedia();return adOpenMedia;
+ }).finally(()=>{adOpenMediaPromise=null});
+ return adOpenMediaPromise;
+}
+$('#adOpenRefresh').onclick=()=>loadOpenMedia(true);
 function renderAdMedia(){
  const all=adItems(),shown=all.filter(x=>adMediaCategory==='all'||adMediaCategory===x.kind||(adMediaCategory==='movie'&&x.kind==='animation'));
  $('#adMediaFilters').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mediaCategory===adMediaCategory));
@@ -972,9 +992,12 @@ function adSetDiscoverMode(mode){
  document.querySelectorAll('#adDiscoverModes [data-discover-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.discoverMode===mode));
  $('#adDiscoverResults').replaceChildren();
  $('#adDiscoverDetail').classList.add('hidden');
- $('#adDiscoverKind').classList.toggle('hidden',mode!=='catalog');
+ $('#adDiscoverKind').classList.toggle('hidden',!['catalog','latest'].includes(mode));
+ $('#adDiscoverQuery').classList.toggle('hidden',mode==='open');
+ $('#adDiscoverForm').querySelector('button[type=submit]').classList.toggle('hidden',mode==='open');
  $('#adDiscoverQuery').placeholder=mode==='sports'?'ابحث عن نادي أو بطولة...':mode==='channels'?'ابحث عن اسم قناة...':'اكتب اسم فيلم أو مسلسل أو أنمي...';
- $('#adDiscoverStatus').textContent=mode==='sports'?'تابع النتائج ومواعيد المباريات من مركز الرياضة داخل أبو داحم، بدون الانتقال إلى موقع آخر.':mode==='channels'?'افتح قائمة القنوات المفحوصة داخل أبو داحم، ثم اختر قناة من مشغّل الموقع.':'ابحث عن عمل وشاهد تفاصيله داخل الموقع. تشغيل العمل الكامل يحتاج حق عرض أو نسخة تملكها.';
+ $('#adDiscoverStatus').textContent=mode==='sports'?'تابع النتائج ومواعيد المباريات من مركز الرياضة داخل أبو داحم.':mode==='channels'?'افتح القنوات المفحوصة داخل أبو داحم.':mode==='latest'?'اكتشف إصدارات هذا العام من مصادر بيانات الأعمال؛ بيانات فقط وليست أفلامًا مرخّصة للتشغيل.':mode==='open'?'أفلام Blender المفتوحة الترخيص، تُحدّث تلقائيًا من Wikimedia Commons.':'ابحث عن عمل، واعرض تفاصيله داخل الموقع. تشغيل العمل يحتاج مصدرًا يسمح بذلك.';
+ if(mode==='latest'||mode==='open'){adDiscoverSubmit();return}
  if(mode!=='catalog'){
   const b=document.createElement('button');b.type='button';b.className='ad-discover-open';b.textContent=mode==='sports'?'⚽ افتح مركز المباريات داخل الموقع':'▶ افتح القنوات المفحوصة داخل الموقع';
   const wrap=document.createElement('div');wrap.className='ad-discover-shortcuts';wrap.append(b);$('#adDiscoverResults').append(wrap);
@@ -994,18 +1017,30 @@ async function adDiscoverSubmit(){
   channelCategory=text?'all':'verified';
   adSwitchMainTab('channels');return;
  }
- if(!text){
+ if(adDiscoverMode==='open'){
+  const request=++adDiscoverRequest;
+  $('#adDiscoverStatus').textContent='جارٍ جلب الأفلام الحرة من Wikimedia Commons...';
+  $('#adDiscoverResults').replaceChildren();
+  const items=await loadOpenMedia();
+  if(request!==adDiscoverRequest||type!=='discover'||adDiscoverMode!=='open')return;
+  adDiscoverItems=items;
+  $('#adDiscoverStatus').textContent=items.length?'تجدّدت قائمة '+items.length.toLocaleString('ar-SA')+' فيلمًا قصيرًا مفتوح الترخيص، ويمكن مشاهدتها هنا.':'ما فيه مقاطع قابلة للعرض من المصدر الآن.';
+  $('#adDiscoverResults').innerHTML=items.map((x,i)=>'<button type="button" class="ad-discover-card" data-discover-item="'+i+'"><div class="ad-discover-noimage">🎬</div><div><strong>'+esc(x.title)+'</strong><small>▶ تشغيل داخل الموقع · '+esc(x.license||'CC')+'</small></div></button>').join('');
+  return;
+ }
+ if(!text&&adDiscoverMode!=='latest'){
   $('#adDiscoverStatus').textContent='اكتب اسم فيلم أو مسلسل أو أنمي للبحث.';return;
  }
  const request=++adDiscoverRequest;
  $('#adDiscoverStatus').textContent='أبحث لك في مكتبة أبو داحم...';
  $('#adDiscoverResults').replaceChildren();
  try{
-  const qs=new URLSearchParams({type:$('#adDiscoverKind').value,q:text,page:'1'});
+  const qs=new URLSearchParams({type:$('#adDiscoverKind').value,q:adDiscoverMode==='latest'?'':text,page:'1'});
+  if(adDiscoverMode==='latest')qs.set('year',String(new Date().getFullYear()));
   const res=await api('/api/catalog?'+qs.toString());
   if(request!==adDiscoverRequest||type!=='discover')return;
-  adDiscoverItems=Array.isArray(res.items)?res.items:[];
-  $('#adDiscoverStatus').textContent=adDiscoverItems.length?'هذه نتائج البيانات المتاحة داخل أبو داحم؛ اضغط أي عمل للتفاصيل.':'ما حصلت نتيجة في قاعدة البيانات الحالية. جرّب اسمًا آخر.';
+  adDiscoverItems=(Array.isArray(res.items)?res.items:[]).sort((a,b)=>Number(b.year||0)-Number(a.year||0));
+  $('#adDiscoverStatus').textContent=adDiscoverItems.length?(adDiscoverMode==='latest'?'إصدارات '+new Date().getFullYear()+' المدرجة تلقائيًا في مصادر البيانات، ليست بالضرورة متاحة للمشاهدة.':'هذه نتائج البيانات المتاحة داخل أبو داحم؛ اضغط أي عمل للتفاصيل.'):'ما حصلت نتيجة في قاعدة البيانات الحالية. جرّب نوعًا آخر أو اسمًا مختلفًا.';
   $('#adDiscoverResults').innerHTML=adDiscoverItems.map((x,i)=>'<button type="button" class="ad-discover-card" data-discover-item="'+i+'">'+(x.poster?'<img loading="lazy" src="'+esc(x.poster)+'" alt="">':'<div class="ad-discover-noimage">🎬</div>')+'<div><strong>'+esc(x.title||'بدون عنوان')+'</strong><small>'+esc(x.year||'')+' · '+esc(({movie:'فيلم',tv:'مسلسل',anime:'أنمي'}[x.type]||x.type||'محتوى'))+'</small></div></button>').join('');
  }catch(e){if(request!==adDiscoverRequest)return;$('#adDiscoverStatus').textContent='تعذر جلب النتائج الآن. '+(e.message||'حاول لاحقًا')}
 }
@@ -1014,6 +1049,7 @@ $('#adDiscoverForm').addEventListener('submit',e=>{e.preventDefault();adDiscover
 $('#adDiscoverResults').addEventListener('click',e=>{
  const b=e.target.closest('[data-discover-item]');if(!b)return;
  const x=adDiscoverItems[Number(b.dataset.discoverItem)];if(!x)return;
+ if(x.sources?.length){adSwitchMainTab('free');openAdVideo(x);return;}
  const d=$('#adDiscoverDetail');d.classList.remove('hidden');
  d.innerHTML='<small>معلومات العمل · أبو داحم</small><h3>'+esc(x.title||'بدون عنوان')+'</h3><p>'+esc(x.overview||'لا يوجد وصف متاح حاليًا.')+'</p><p>سنة الإنتاج: '+esc(x.year||'غير معروفة')+' · الجودة والتشغيل حسب النسخة المرخصة.</p><p><strong>المشاهدة:</strong> لا يتوفر لهذا العنوان مشغل مرخص داخل أبو داحم حتى الآن. بإمكانك تشغيل ملفات الفيديو الخاصة بك داخل قسم المشاهدة، دون رفعها للموقع.</p><button type="button" id="adDiscoverLocalView">🎬 افتح قسم المشاهدة داخل الموقع</button>';
  $('#adDiscoverLocalView').onclick=()=>adSwitchMainTab('free');
