@@ -219,6 +219,21 @@ async function fallbackHandler(req,res,action){
  if(!q.league&&action==="matches"){
   if(view==="standings")return json(res,400,{error:"اختر بطولة لعرض جدول الترتيب."});
   const choices=FALLBACK_COMPETITIONS.filter(x=>["spl","epl","laliga","seriea","bundesliga","ucl","afc_elite","nba"].includes(x.id));
+  // The free provider publishes a day schedule separately from the next-event endpoint.
+  // Use it first for today's or tomorrow's matches; never label its results as live scores.
+  if(view==="today"||view==="tomorrow"){
+   const target=todayInRiyadh(view==="tomorrow"?1:0);
+   const schedules=await Promise.allSettled(choices.filter(x=>x.sport==="Soccer").map(x=>tsd("/eventsday.php",{d:target,l:x.providerId},600000)));
+   const footballChoices=choices.filter(x=>x.sport==="Soccer");
+   let daily=[];
+   schedules.forEach((r,i)=>{
+    if(r.status!=="fulfilled")return;
+    const item=footballChoices[i];
+    daily.push(...(r.value.events||[]).map(x=>({...mapTsdEvent(x),league:{id:String(x.idLeague||item.providerId),name:item.name,nameAr:item.nameAr,logo:x.strLeagueBadge||item.logo,country:item.country}})));
+   });
+   daily=[...new Map(daily.filter(x=>x.id&&x.date===target).map(x=>[x.id,x])).values()];
+   if(daily.length)return json(res,200,{provider:"TheSportsDB free · day schedule",view,fixtures:daily,liveAvailable:false,limited:true,updatedAt:new Date().toISOString(),message:"جدول مباريات اليوم من مصدر مجاني وقد لا يشمل كل اللقاءات؛ لا يقدّم بثًا أو نتائج حية مضمونة."});
+  }
   const endpoint=view==="recent"||view==="results"?"eventspastleague.php":"eventsnextleague.php";
   const results=await Promise.allSettled(choices.map(x=>tsd("/"+endpoint,{id:x.providerId},view==="recent"||view==="results"?900000:3600000)));
   let fixtures=[];
@@ -232,6 +247,14 @@ async function fallbackHandler(req,res,action){
  if(action==="standings"||view==="table"||view==="standings"){
   const d=await tsd("/lookuptable.php",{l:selected.providerId,s:String(q.season||selected.season)},3600000);
   return json(res,200,{provider:"TheSportsDB free",table:(d.table||[]).map(mapTsdStanding),season:q.season||selected.season,liveAvailable:false});
+ }
+ if(view==="today"||view==="tomorrow"){
+  const target=todayInRiyadh(view==="tomorrow"?1:0);
+  try{
+   const schedule=await tsd("/eventsday.php",{d:target,l:selected.providerId},600000);
+   const daily=[...new Map((schedule.events||[]).map(mapTsdEvent).filter(x=>x.id&&x.date===target).map(x=>[x.id,x])).values()];
+   if(daily.length)return json(res,200,{provider:"TheSportsDB free · day schedule",view,fixtures:daily,season:q.season||selected.season,updatedAt:new Date().toISOString(),liveAvailable:false,limited:true,message:"جدول مباريات يومي محدود؛ تحقق من الناقل الرسمي عند بدء المباراة."});
+  }catch{}
  }
  const endpoint=view==="recent"||view==="results"?"eventspastleague.php":"eventsnextleague.php";
  const d=await tsd("/"+endpoint,{id:selected.providerId},view==="recent"||view==="results"?900000:3600000);
