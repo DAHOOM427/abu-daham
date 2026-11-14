@@ -6,6 +6,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "rights-and-licensing.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "api/auth.js",
       "use": "@vercel/node"
     },
