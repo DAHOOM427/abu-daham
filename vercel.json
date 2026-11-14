@@ -40,6 +40,10 @@
     {
       "src": "api/open-media.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/channel-health.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -78,6 +82,10 @@
     {
       "src": "^/api/open-media/?$",
       "dest": "/api/open-media.js"
+    },
+    {
+      "src": "^/api/channel-health/?$",
+      "dest": "/api/channel-health.js"
     },
     {
       "handle": "filesystem"
