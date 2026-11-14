@@ -47,10 +47,14 @@ let cache={at:0,items:null};
 async function check(x){
  const started=Date.now();
  try{
-  const r=await fetch(x.url,{headers:{"Accept":"application/vnd.apple.mpegurl,application/x-mpegURL,text/plain"},signal:AbortSignal.timeout(6500),redirect:"follow"});
+  // Send the site's Origin. Server reachability alone does not imply browser playback permission.
+  const origin="https://abu-daham.vercel.app";
+  const r=await fetch(x.url,{headers:{"Accept":"application/vnd.apple.mpegurl,application/x-mpegURL,text/plain","Origin":origin},signal:AbortSignal.timeout(6500),redirect:"follow"});
   const content=await r.text();
-  return {id:x.id,manifestReachable:r.ok&&content.slice(0,300).includes("#EXTM3U"),http:r.status,browserCors:r.headers.get("access-control-allow-origin")||"",latencyMs:Date.now()-started};
- }catch(e){return {id:x.id,manifestReachable:false,http:0,reason:e.name==="TimeoutError"?"timeout":"network",latencyMs:Date.now()-started}}
+  const cors=String(r.headers.get("access-control-allow-origin")||"").trim();
+  const browserCors=cors==="*"||cors===origin?cors:"";
+  return {id:x.id,manifestReachable:r.ok&&/^\s*#EXTM3U/.test(content.replace(/^\uFEFF/,"").slice(0,300)),http:r.status,browserCors,latencyMs:Date.now()-started};
+ }catch(e){return {id:x.id,manifestReachable:false,http:0,browserCors:"",reason:e.name==="TimeoutError"?"timeout":"network",latencyMs:Date.now()-started}}
 }
 export default async function handler(req,res){
  if(req.method!=="GET")return json(res,405,{error:"Method not allowed"});

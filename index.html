@@ -570,7 +570,7 @@ async function load(){
   return;
  }
  if(type==='channels'){
-  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();loadFreeTV();loadChannelHealth();return;
+  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();if(channelCategory!=='verified')loadFreeTV();loadChannelHealth();return;
  }
  if(type==='free'){
   $('#freeHub').classList.remove('hidden');
@@ -656,7 +656,25 @@ const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات
 let channelCategory='verified',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
-let channelHealth={},channelHealthPromise=null,channelHealthUpdated=0;
+let channelHealth={},channelHealthPromise=null,channelHealthUpdated=0,channelFailed=new Set();
+function prefersNativeChannelPlayback(){
+ const ua=navigator.userAgent||'';
+ return /iPhone|iPad|iPod/i.test(ua)||(/Safari/i.test(ua)&&!/Chrome|Chromium|CriOS|Edg|FxiOS|OPR/i.test(ua));
+}
+function verifiedChannel(ch){
+ const state=channelHealth[ch.id];
+ return Boolean(ch.checkedServer&&state?.manifestReachable===true&&!channelFailed.has(ch.id)&&(prefersNativeChannelPlayback()||state.browserCors));
+}
+function channelStatusLabel(ch){
+ const state=channelHealth[ch.id];
+ if(channelFailed.has(ch.id))return '⚠ فشل التشغيل على هذا الجهاز';
+ if(ch.checkedServer){
+  if(!state)return 'جارٍ فحص القناة...';
+  if(!state.manifestReachable)return '⚠ المصدر لا يستجيب';
+  return verifiedChannel(ch)?'✓ وصول البث متاح · التشغيل حسب المصدر':'⚠ قد لا يعمل في المتصفح الحالي';
+ }
+ return ch.access||(ch.stream?'رابط بث عام · لم يُفحص':'افتح المصدر الرسمي');
+}
 let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=180,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0,channelLagTimer=null,freeTVTotal=0,freeTVMatchCount=0,freeTVHasMore=false,freeTVSeq=0,freeTVLoading=false,freeTVSearchTimer=null;
 function allChannels(){return [...officialChannels.filter(x=>x.stream),...freeTVChannels,...officialChannels.filter(x=>!x.stream)]}
 async function loadChannelHealth(force=false){
@@ -666,8 +684,8 @@ async function loadChannelHealth(force=false){
  channelHealthPromise=api('/api/channel-health').then(data=>{
   channelHealth=Object.fromEntries((data.items||[]).map(x=>[x.id,x]));
   channelHealthUpdated=Date.now();
-  const all=data.items||[],good=all.filter(x=>x.manifestReachable).length;
-  $('#channelHealthStatus').textContent='قنوات منتقاة: '+good.toLocaleString('ar-SA')+' من '+all.length.toLocaleString('ar-SA')+' وصلت قوائم بثها في آخر فحص. لا يضمن ذلك تشغيلها على جهازك أو خلوها من إعلانات الناقل. القنوات غير المتاحة أُخفيت من تبويب «قنوات مفحوصة» مؤقتًا.';
+  const all=data.items||[],good=all.filter(x=>x.manifestReachable).length,compatible=all.filter(x=>x.manifestReachable&&(prefersNativeChannelPlayback()||x.browserCors)).length;
+  $('#channelHealthStatus').textContent='قنوات منتقاة: '+good.toLocaleString('ar-SA')+' من '+all.length.toLocaleString('ar-SA')+' وصلت قوائم بثها في آخر فحص، و'+compatible.toLocaleString('ar-SA')+' تناسب طريقة التشغيل في هذا المتصفح على الأرجح. لا يضمن ذلك توفر أجزاء الفيديو أو خلوها من إعلانات الناقل. القنوات غير المتاحة أُخفيت من تبويب «قنوات مفحوصة» مؤقتًا.';
   renderChannels();
  }).catch(()=>{
   $('#channelHealthStatus').textContent='تعذر تجديد فحص القنوات الآن؛ آخر نتائج محفوظة قد تكون قديمة. جرّب لاحقًا.';
@@ -708,6 +726,7 @@ async function loadFreeTV(append=false){
  return running;
 }
 function channelPriority(ch){
+ if(channelFailed.has(ch.id))return 4;
  const reachable=channelHealth[ch.id]?.manifestReachable;
  if(reachable===false)return 3;
  if(reachable===true&&(ch.stream||ch.embed))return 0;
@@ -716,15 +735,15 @@ function channelPriority(ch){
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable===true):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelPriority(a)-channelPriority(b));
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?verifiedChannel(x):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelPriority(a)-channelPriority(b));
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
- const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable===true):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
+ const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?verifiedChannel(x):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
  const totalMatches=['verified','favorites'].includes(channelCategory)?filtered.length:officialCount+freeTVMatchCount;
  $('#channelCount').textContent=totalMatches.toLocaleString('ar-SA')+' مطابقة · '+(freeTVTotal+officialChannels.length).toLocaleString('ar-SA')+' مدرجة';
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?(channelHealth[ch.id]?.manifestReachable===true?(channelHealth[ch.id]?.browserCors?'✓ المصدر متاح الآن':'✓ وصول الخادم · المتصفح قد يختلف'):channelHealth[ch.id]?.manifestReachable===false?'⚠ تعذر اتصال البث':'لم يكتمل الفحص'):ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(channelStatusLabel(ch))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',(!freeTVHasMore&&filtered.length<=channelVisibleCount)||['verified','favorites'].includes(channelCategory));
  $('#channelLoadMore').textContent=freeTVHasMore?'عرض 120 قناة أخرى':'عرض المزيد';
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
@@ -749,11 +768,19 @@ function closeChannelRoom(){
 }
 function channelError(message){
  const box=$('#channelVideoArea');if(!currentChannel)return;
+ const failedChannel=currentChannel;
  stopChannelPlayback();
+ channelFailed.add(failedChannel.id);
+ renderChannels();
  const block=document.createElement('div');block.className='ch-video-placeholder';
  const label=document.createElement('strong');label.textContent='تعذر تشغيل هذه القناة';
  const info=document.createElement('p');info.textContent=message||'مصدر البث متوقف أو محجوب في بلدك أو لا يسمح بالتشغيل من موقع آخر. جرّب قناة ثانية.';
- block.append(label,info);box.append(block);
+ block.append(label,info);
+ if(failedChannel.url){
+  const official=document.createElement('a');official.href=failedChannel.url;official.target='_blank';official.rel='noopener noreferrer';official.textContent='افتح القناة من مصدرها الرسمي';official.style.color='var(--green)';official.style.display='block';official.style.marginTop='12px';block.append(official);
+ }
+ const retry=document.createElement('button');retry.type='button';retry.className='smallbtn';retry.textContent='🔄 إعادة تجربة القناة';retry.style.marginTop='12px';retry.onclick=()=>{channelFailed.delete(failedChannel.id);openChannelRoom(failedChannel.id,true)};block.append(retry);
+ box.append(block);
  channelState('تعذر التشغيل · جرّب إعادة الاتصال أو قناة أخرى');
 }
 function hlsLibrary(){
@@ -790,6 +817,8 @@ async function openChannelStream(ch){
  video.addEventListener('playing',()=>{
   if(generation!==channelGeneration)return;
   if(channelLagTimer)clearInterval(channelLagTimer);
+  channelFailed.delete(ch.id);
+  renderChannels();
   channelLagTimer=setInterval(()=>{
    if(generation!==channelGeneration)return;
    try{if(video.seekable.length){const end=video.seekable.end(video.seekable.length-1),lag=end-video.currentTime;$('#channelEdgeLag').textContent=Number.isFinite(lag)&&lag>=0?'فارق المشغّل ≈ '+Math.round(lag)+' ث (غير شامل تأخير الناقل)':''}}catch{}
@@ -806,13 +835,14 @@ async function openChannelStream(ch){
   if(generation===channelGeneration&&video.readyState<3)channelError('تأخر بدء البث من المصدر أكثر من 25 ثانية. اختر قناة أخرى أو حاول مجددًا.');
  },25000);
  const fail=reason=>{if(generation===channelGeneration)channelError(reason)};
- if(video.canPlayType('application/vnd.apple.mpegurl')){
-  video.src=ch.stream;video.play().catch(()=>channelState('اضغط ▶ داخل المشغل لبدء القناة'));return;
- }
+ const nativeSupported=Boolean(video.canPlayType('application/vnd.apple.mpegurl'));
+ const startNative=()=>{if(generation!==channelGeneration)return;video.src=ch.stream;video.play().catch(()=>channelState('اضغط ▶ داخل المشغل لبدء القناة'))};
+ if(nativeSupported&&prefersNativeChannelPlayback()){startNative();return}
  try{
-  const Hls=await hlsLibrary();
+  let Hls;
+  try{Hls=await hlsLibrary()}catch(e){if(nativeSupported){startNative();return}throw e}
   if(generation!==channelGeneration||currentChannel!==ch)return;
-  if(!Hls.isSupported()){fail('المتصفح لا يدعم بث HLS. جرّب Safari أو Chrome حديثًا.');return}
+  if(!Hls.isSupported()){if(nativeSupported){startNative();return}fail('المتصفح لا يدعم بث HLS. جرّب Safari أو Chrome حديثًا.');return}
   const player=new Hls({
    enableWorker:true,
    lowLatencyMode:true,
@@ -856,7 +886,7 @@ async function openChannelStream(ch){
   player.attachMedia(video);player.on(Hls.Events.MEDIA_ATTACHED,()=>player.loadSource(ch.stream));
  }catch(e){fail('تعذر بدء مشغل القناة: '+(e.message||'خطأ غير معروف'))}
 }
-function openChannelRoom(id){
+function openChannelRoom(id,force=false){
  const ch=allChannels().find(x=>x.id===id);if(!ch)return;
  stopChannelPlayback();
  currentChannel=ch;
@@ -867,7 +897,9 @@ function openChannelRoom(id){
  $('#channelOfficialLink').href=ch.url||'#';
  $('#channelOrigin').textContent=ch.host||'';
  const box=$('#channelVideoArea');
- if(ch.stream){openChannelStream(ch)}
+ if(ch.stream&&ch.checkedServer&&!force&&channelHealth[ch.id]?.manifestReachable===false){
+  channelError('آخر فحص يؤكد أن خادم هذه القناة لا يستجيب. يمكنك إعادة المحاولة، أو فتح بثها من المصدر الرسمي.');
+ }else if(ch.stream){openChannelStream(ch)}
  else if(ch.embed){
   const iframe=document.createElement('iframe');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(ch.embed)+'?autoplay=1';iframe.title='بث '+ch.name;iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.setAttribute('allowfullscreen','');box.append(iframe);
  }else{
@@ -886,7 +918,7 @@ $('#channelGrid').addEventListener('click',e=>{
 
 $('#channelReconnect').onclick=()=>{
  const ch=currentChannel;if(!ch)return;
- stopChannelPlayback();if(ch.stream)openChannelStream(ch);else openChannelRoom(ch.id);
+ channelFailed.delete(ch.id);stopChannelPlayback();if(ch.stream)openChannelStream(ch);else openChannelRoom(ch.id,true);
 };
 $('#channelGoLive').onclick=()=>{
  const video=$('#channelVideoArea video');if(!video){channelState('هذا المصدر لا يحتوي على مشغل مباشر داخل الصفحة');return}
