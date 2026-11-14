@@ -207,7 +207,54 @@
 .ch-platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}.ch-platform-card{background:#172319;border:1px solid #41593b;border-radius:12px;padding:13px;display:flex;gap:10px;align-items:flex-start}.ch-platform-icon{background:#263927;width:39px;height:39px;border-radius:10px;display:grid;place-items:center;flex:0 0 39px;font-size:19px}
 .ch-platform-body{min-width:0;display:flex;flex-direction:column;gap:5px}.ch-platform-body strong{font-size:13px}.ch-platform-body small{font-size:10px;color:#a1bb9b}.ch-platform-access{font-size:10px;border-radius:7px;background:#263823;border:1px solid #4c7343;color:#d1edc5;padding:4px 7px;width:fit-content}.ch-platform-body p{font-size:11px;line-height:1.6;color:#b3c6b0;margin:4px 0}.ch-platform-body a{color:#b8f34b;text-decoration:underline;font-size:11px}.ch-platforms-footnote{font-size:11px;line-height:1.8;color:#a2b99e;border-top:1px solid #375033;padding-top:12px;margin-top:15px}
 @media(max-width:570px){.ch-platform-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ch-platform-card{padding:9px;gap:7px}.ch-platform-icon{width:29px;height:29px;flex-basis:29px;font-size:15px}.ch-platform-body strong{font-size:11px}}
-</style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="free">🎬 مشاهدة بدون إعلانات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section class="targets" aria-label="أهداف مكتبة أبو داحم"><div><strong>359,756</strong><small>هدف الأفلام (غالبًا 90–180 دقيقة)</small></div><div><strong>175,225</strong><small>هدف المسلسلات بمواسمها وحلقاتها</small></div><div><strong>41,537</strong><small>هدف أعمال الأنمي الكاملة</small></div><div><strong>50,000</strong><small>هدف القنوات النهائي · المرحلة الأولى 25,000</small></div><div><strong>626,518</strong><small>إجمالي الأهداف النهائية شامل القنوات</small></div><p><strong>هذه أعداد مستهدفة وليست محتوى متاحًا الآن.</strong> الفيلم غالبًا من ساعة ونصف إلى 3 ساعات؛ الكرتون الطويل من ساعة إلى ساعتين؛ المسلسل الكوميدي 20–30 دقيقة للحلقة؛ الدراما والأكشن والكوري غالبًا 40 دقيقة فأكثر؛ الأنمي غالبًا 20–25 دقيقة للحلقة. عدد الحلقات والمواسم مختلف لكل مسلسل، والمطلوب حلقاته الأصلية كاملة. التصنيف بحسب مدة العمل الفعلية، ولا نعتبر المقاطع القصيرة التجريبية أفلامًا طويلة. الجودة 4K / 2K / HD عند توفر نسخة وحقوق عرض لها.</p></section><section class="filters" id="filters"><label for="yearFilter">سنة الإصدار</label><select id="yearFilter"><option value="">كل السنوات (1985–2026)</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option></select><label for="qualityFilter">الجودة</label><select id="qualityFilter"><option value="">كل الجودات</option><option value="4K">4K</option><option value="2K">2K / QHD</option><option value="HD">HD</option></select><button id="refresh" class="refresh">تحديث النتائج</button></section><div id="status" class="status">اختر قسماً أو اكتب اسم ما تبحث عنه.</div><section id="results" class="grid"></section><div class="pager"><button id="prevPage" disabled>السابق</button><span id="pageLabel" class="muted">صفحة 1</span><button id="nextPage">التالي</button></div><div id="detail" class="detail-backdrop hidden"><article class="detail-panel"><button id="detailClose" class="detail-close">إغلاق ✕</button><div id="detailBody"></div></article></div><section id="sportsPanel" class="sports-panel sports-hub hidden">
+
+.ad-discover{margin:20px 0 28px;color:#eaf6e2}
+.ad-discover-hero{border:1px solid #3c6340;background:linear-gradient(125deg,#15281b,#0c1710);padding:24px 22px;border-radius:20px}
+.ad-discover-hero>span{font-size:10px;letter-spacing:1px;color:#b8f34b}
+.ad-discover-hero h2{font-size:clamp(20px,3.5vw,30px);margin:8px 0 10px}
+.ad-discover-hero>p{font-size:13px;color:#bdd1b8;line-height:1.8;margin:0 0 17px}
+.ad-discover-modes{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 15px}
+.ad-discover-modes button{background:#203124;color:#d4ead0;border:1px solid #456449;padding:11px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+.ad-discover-modes button.selected{background:#b8f34b;color:#101b10;border-color:#b8f34b}
+.ad-discover-search{display:flex;flex-wrap:wrap;gap:8px}
+.ad-discover-search input{flex:1;min-width:140px;background:#101e13;border:1px solid #52704d;color:#f1f8ec;padding:13px;border-radius:10px}
+.ad-discover-search select{background:#101e13;border:1px solid #52704d;border-radius:10px;color:#f1f8ec;padding:10px}
+.ad-discover-search button,.ad-discover-detail button{background:#b8f34b;border:0;color:#122114;font-weight:800;padding:12px 17px;border-radius:10px;cursor:pointer}
+.ad-discover-status{font-size:12px;line-height:1.7;color:#b4d2a9;margin:15px 0 0}
+.ad-discover-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:18px}
+.ad-discover-card{border:1px solid #36553b;background:#17251a;color:#edf5e6;border-radius:14px;overflow:hidden;display:block;padding:0;text-align:right;cursor:pointer;transition:transform .16s,border-color .16s}
+.ad-discover-card:hover{transform:translateY(-2px);border-color:#b8f34b}
+.ad-discover-card img{width:100%;aspect-ratio:2/3;object-fit:cover;background:#26372a}
+.ad-discover-card .ad-discover-noimage{aspect-ratio:2/3;display:grid;place-items:center;font-size:46px;background:#223328}
+.ad-discover-card div:last-child{padding:10px}.ad-discover-card strong{display:block;font-size:13px;line-height:1.4}
+.ad-discover-card small{display:block;color:#abc5a5;font-size:11px;margin-top:6px}
+.ad-discover-detail{border:1px solid #597f50;background:#17251b;border-radius:14px;padding:18px;margin-top:14px;line-height:1.8}
+.ad-discover-detail h3{margin:0 0 7px}.ad-discover-detail p{font-size:13px;color:#c0d3b9}.ad-discover-detail small{color:#b8f34b}
+.ad-discover-foot{font-size:12px;color:#adc8a8;line-height:1.8;margin:16px 0}
+.ad-discover-shortcuts{display:flex;gap:12px;flex-wrap:wrap}
+.ad-discover-shortcuts button{background:#1c3020;border:1px solid #5d8858;border-radius:12px;color:#c9f3bb;padding:14px;cursor:pointer;font-weight:700}
+@media(max-width:600px){.ad-discover-hero{padding:18px 13px}.ad-discover-modes button{flex:1 1 100%;text-align:right}.ad-discover-search{flex-direction:column}.ad-discover-search input,.ad-discover-search select,.ad-discover-search button{width:100%;box-sizing:border-box}.ad-discover-results{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}}
+</style></head><body><div id="gate" class="gate"><form id="login" class="panel"><div class="logo">أبو داحم</div><div class="muted" style="letter-spacing:2px">ABU DAHAM</div><p class="muted">منصتك للترفيه والأفلام والأنمي والرياضة</p><input id="code" type="password" placeholder="رمز الدخول الخاص" autocomplete="current-password" required><button class="primary">دخول</button><button id="sendEmailCode" type="button" class="smallbtn" hidden style="width:100%;margin:12px 0">إرسال رمز جديد إلى بريدي الإلكتروني</button><div id="emailCodePanel" class="hidden"><input id="emailCodeValue" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="اكتب رمز البريد المكوّن من 8 أرقام"><button id="verifyEmailCode" class="primary" type="button">تأكيد رمز البريد</button><p class="muted" style="font-size:12px">الرمز صالح 5 دقائق. يُرسل رمز جديد عند طلب الدخول.</p></div><div id="error" class="error"></div><small class="muted">تستمر جلسة الدخول 12 ساعة</small></form></div><div id="site" class="hidden"><header><strong class="logo">أبو داحم <small style="font-size:12px;letter-spacing:1px">ABU DAHAM</small></strong><button id="logout" class="smallbtn">تسجيل الخروج</button></header><main class="app"><nav class="nav" id="nav"><button data-type="all" class="active">الرئيسية</button><button data-type="discover">🔎 اكتشف وشاهد</button><button data-type="movie">الأفلام</button><button data-type="tv">المسلسلات</button><button data-type="anime">الأنمي</button><button data-type="channels">القنوات</button><button data-type="free">🎬 مشاهدة بدون إعلانات</button><button data-type="sports">الرياضة</button><button data-type="kick">Kick</button></nav><section id="hero" class="hero"><div class="muted">كل الترفيه في مكان واحد</div><h1>عالمك الترفيهي <span>باسم أبو داحم.</span></h1><p class="muted">اكتشف أعمالاً جديدة وابحث عن أفلامك ومسلسلاتك المفضلة.</p><div class="search"><input id="query" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..."><button id="search" class="primary">بحث</button></div></section><section id="discoverHub" class="ad-discover hidden" aria-label="اكتشاف المحتوى والمباريات داخل أبو داحم">
+ <div class="ad-discover-hero">
+  <span>ABU DAHAM · DISCOVER & WATCH</span>
+  <h2>🔎 اكتشف وشاهد داخل أبو داحم</h2>
+  <p>دليل بحث للأفلام والمسلسلات والأنمي، ومركز للمباريات والقنوات — في موقعك نفسه وبدون إعلانات يضيفها أبو داحم. هذا تصميم مستقل، وليس دمجًا رسميًا لبيانات JustWatch أو Live Soccer TV.</p>
+  <div class="ad-discover-modes" id="adDiscoverModes">
+   <button type="button" data-discover-mode="catalog" class="selected">🎬 دليل الأفلام والمسلسلات</button>
+   <button type="button" data-discover-mode="sports">⚽ دليل الكورة والمباريات</button>
+   <button type="button" data-discover-mode="channels">📡 قنوات قابلة للتشغيل</button>
+  </div>
+  <form id="adDiscoverForm" class="ad-discover-search">
+   <select id="adDiscoverKind" aria-label="نوع المحتوى"><option value="all">الكل</option><option value="movie">أفلام</option><option value="tv">مسلسلات</option><option value="anime">أنمي</option></select>
+   <input id="adDiscoverQuery" aria-label="بحث المحتوى" placeholder="اكتب اسم فيلم أو مسلسل أو أنمي..." autocomplete="off" type="search">
+   <button type="submit">⌕ ابحث</button>
+  </form>
+  <p id="adDiscoverStatus" class="ad-discover-status" role="status">ابحث عن عمل ثم اضغط عليه لعرض تفاصيله هنا، أو اختر الكورة والقنوات المباشرة.</p>
+ </div>
+ <div id="adDiscoverResults" class="ad-discover-results" aria-live="polite"></div>
+ <div id="adDiscoverDetail" class="ad-discover-detail hidden"></div>
+ <div class="ad-discover-foot"><strong>المشاهدة داخل الموقع:</strong> تشغيل القنوات المجانية المتوافقة والمسموح بعرضها من مشغّل أبو داحم؛ الأعمال والقنوات التي تحتاج ترخيصًا أو اشتراكًا لا نعرضها على أنها متاحة مجانًا. قد تظهر إعلانات يفرضها صاحب البث نفسه.</div>
+</section><section class="targets" aria-label="أهداف مكتبة أبو داحم"><div><strong>359,756</strong><small>هدف الأفلام (غالبًا 90–180 دقيقة)</small></div><div><strong>175,225</strong><small>هدف المسلسلات بمواسمها وحلقاتها</small></div><div><strong>41,537</strong><small>هدف أعمال الأنمي الكاملة</small></div><div><strong>50,000</strong><small>هدف القنوات النهائي · المرحلة الأولى 25,000</small></div><div><strong>626,518</strong><small>إجمالي الأهداف النهائية شامل القنوات</small></div><p><strong>هذه أعداد مستهدفة وليست محتوى متاحًا الآن.</strong> الفيلم غالبًا من ساعة ونصف إلى 3 ساعات؛ الكرتون الطويل من ساعة إلى ساعتين؛ المسلسل الكوميدي 20–30 دقيقة للحلقة؛ الدراما والأكشن والكوري غالبًا 40 دقيقة فأكثر؛ الأنمي غالبًا 20–25 دقيقة للحلقة. عدد الحلقات والمواسم مختلف لكل مسلسل، والمطلوب حلقاته الأصلية كاملة. التصنيف بحسب مدة العمل الفعلية، ولا نعتبر المقاطع القصيرة التجريبية أفلامًا طويلة. الجودة 4K / 2K / HD عند توفر نسخة وحقوق عرض لها.</p></section><section class="filters" id="filters"><label for="yearFilter">سنة الإصدار</label><select id="yearFilter"><option value="">كل السنوات (1985–2026)</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option></select><label for="qualityFilter">الجودة</label><select id="qualityFilter"><option value="">كل الجودات</option><option value="4K">4K</option><option value="2K">2K / QHD</option><option value="HD">HD</option></select><button id="refresh" class="refresh">تحديث النتائج</button></section><div id="status" class="status">اختر قسماً أو اكتب اسم ما تبحث عنه.</div><section id="results" class="grid"></section><div class="pager"><button id="prevPage" disabled>السابق</button><span id="pageLabel" class="muted">صفحة 1</span><button id="nextPage">التالي</button></div><div id="detail" class="detail-backdrop hidden"><article class="detail-panel"><button id="detailClose" class="detail-close">إغلاق ✕</button><div id="detailBody"></div></article></div><section id="sportsPanel" class="sports-panel sports-hub hidden">
  <div class="sports-hub-header">
   <div><div class="sports-kicker">ABU DAHAM · SPORTS CENTER</div><h2>مركز المباريات والنتائج</h2><p>نتائج ومواعيد وترتيب الأندية والبطولات</p></div>
   <div class="sports-header-side"><span id="sportsProvider" class="sports-provider">مصدر البيانات</span><span id="sportsUpdated" class="sports-updated"></span></div>
@@ -504,8 +551,14 @@ async function load(){
  if(type!=='kick'){$('#player').removeAttribute('src');$('#frame').classList.add('hidden');$('#kickGuide').classList.add('hidden')}
  $('#sportsPanel').classList.add('hidden');
  $('#freeHub').classList.add('hidden');$('#channelHub').classList.add('hidden');
+ $('#discoverHub').classList.toggle('hidden',type!=='discover');
+ $('.targets').classList.toggle('hidden',type==='discover');
  if(type!=='free')closeAdVideo();
  if(type!=='channels')closeChannelRoom();
+ if(type==='discover'){
+  $('#hero').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';
+  return;
+ }
  if(type==='channels'){
   $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();loadFreeTV();return;
  }
@@ -905,6 +958,68 @@ $('#adHtmlVideo').addEventListener('error',()=>{
 });
 window.addEventListener('pagehide',()=>adFamilyEntries.forEach(x=>URL.revokeObjectURL(x.sources[0].url)));
 renderAdMedia();
+
+
+/* Abu Daham original discovery hub; does not scrape or embed JustWatch or Live Soccer TV. */
+let adDiscoverMode='catalog',adDiscoverItems=[],adDiscoverRequest=0;
+function adSwitchMainTab(next){
+ type=next;page=1;
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.type===type));
+ load();
+}
+function adSetDiscoverMode(mode){
+ adDiscoverMode=mode;
+ document.querySelectorAll('#adDiscoverModes [data-discover-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.discoverMode===mode));
+ $('#adDiscoverResults').replaceChildren();
+ $('#adDiscoverDetail').classList.add('hidden');
+ $('#adDiscoverKind').classList.toggle('hidden',mode!=='catalog');
+ $('#adDiscoverQuery').placeholder=mode==='sports'?'ابحث عن نادي أو بطولة...':mode==='channels'?'ابحث عن اسم قناة...':'اكتب اسم فيلم أو مسلسل أو أنمي...';
+ $('#adDiscoverStatus').textContent=mode==='sports'?'تابع النتائج ومواعيد المباريات من مركز الرياضة داخل أبو داحم، بدون الانتقال إلى موقع آخر.':mode==='channels'?'افتح قائمة القنوات المفحوصة داخل أبو داحم، ثم اختر قناة من مشغّل الموقع.':'ابحث عن عمل وشاهد تفاصيله داخل الموقع. تشغيل العمل الكامل يحتاج حق عرض أو نسخة تملكها.';
+ if(mode!=='catalog'){
+  const b=document.createElement('button');b.type='button';b.className='ad-discover-open';b.textContent=mode==='sports'?'⚽ افتح مركز المباريات داخل الموقع':'▶ افتح القنوات المفحوصة داخل الموقع';
+  const wrap=document.createElement('div');wrap.className='ad-discover-shortcuts';wrap.append(b);$('#adDiscoverResults').append(wrap);
+  b.onclick=()=>adDiscoverSubmit();
+ }
+}
+async function adDiscoverSubmit(){
+ const text=$('#adDiscoverQuery').value.trim();
+ $('#adDiscoverDetail').classList.add('hidden');
+ if(adDiscoverMode==='sports'){
+  sportsView='today';sportsOnlyAhli=false;
+  $('#sportsSearch').value=text;
+  adSwitchMainTab('sports');return;
+ }
+ if(adDiscoverMode==='channels'){
+  $('#channelSearch').value=text;
+  channelCategory=text?'all':'verified';
+  adSwitchMainTab('channels');return;
+ }
+ if(!text){
+  $('#adDiscoverStatus').textContent='اكتب اسم فيلم أو مسلسل أو أنمي للبحث.';return;
+ }
+ const request=++adDiscoverRequest;
+ $('#adDiscoverStatus').textContent='أبحث لك في مكتبة أبو داحم...';
+ $('#adDiscoverResults').replaceChildren();
+ try{
+  const qs=new URLSearchParams({type:$('#adDiscoverKind').value,q:text,page:'1'});
+  const res=await api('/api/catalog?'+qs.toString());
+  if(request!==adDiscoverRequest||type!=='discover')return;
+  adDiscoverItems=Array.isArray(res.items)?res.items:[];
+  $('#adDiscoverStatus').textContent=adDiscoverItems.length?'هذه نتائج البيانات المتاحة داخل أبو داحم؛ اضغط أي عمل للتفاصيل.':'ما حصلت نتيجة في قاعدة البيانات الحالية. جرّب اسمًا آخر.';
+  $('#adDiscoverResults').innerHTML=adDiscoverItems.map((x,i)=>'<button type="button" class="ad-discover-card" data-discover-item="'+i+'">'+(x.poster?'<img loading="lazy" src="'+esc(x.poster)+'" alt="">':'<div class="ad-discover-noimage">🎬</div>')+'<div><strong>'+esc(x.title||'بدون عنوان')+'</strong><small>'+esc(x.year||'')+' · '+esc(({movie:'فيلم',tv:'مسلسل',anime:'أنمي'}[x.type]||x.type||'محتوى')+'</small></div></button>').join('');
+ }catch(e){if(request!==adDiscoverRequest)return;$('#adDiscoverStatus').textContent='تعذر جلب النتائج الآن. '+(e.message||'حاول لاحقًا')}
+}
+$('#adDiscoverModes').addEventListener('click',e=>{const b=e.target.closest('[data-discover-mode]');if(b)adSetDiscoverMode(b.dataset.discoverMode)});
+$('#adDiscoverForm').addEventListener('submit',e=>{e.preventDefault();adDiscoverSubmit()});
+$('#adDiscoverResults').addEventListener('click',e=>{
+ const b=e.target.closest('[data-discover-item]');if(!b)return;
+ const x=adDiscoverItems[Number(b.dataset.discoverItem)];if(!x)return;
+ const d=$('#adDiscoverDetail');d.classList.remove('hidden');
+ d.innerHTML='<small>معلومات العمل · أبو داحم</small><h3>'+esc(x.title||'بدون عنوان')+'</h3><p>'+esc(x.overview||'لا يوجد وصف متاح حاليًا.')+'</p><p>سنة الإنتاج: '+esc(x.year||'غير معروفة')+' · الجودة والتشغيل حسب النسخة المرخصة.</p><p><strong>المشاهدة:</strong> لا يتوفر لهذا العنوان مشغل مرخص داخل أبو داحم حتى الآن. بإمكانك تشغيل ملفات الفيديو الخاصة بك داخل قسم المشاهدة، دون رفعها للموقع.</p><button type="button" id="adDiscoverLocalView">🎬 افتح قسم المشاهدة داخل الموقع</button>';
+ $('#adDiscoverLocalView').onclick=()=>adSwitchMainTab('free');
+ d.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+adSetDiscoverMode('catalog');
 
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button[data-type]');if(!b)return;type=b.dataset.type;page=1;document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x===b));load()});
 $('#search').onclick=()=>{page=1;load()};$('#query').addEventListener('keydown',e=>{if(e.key==='Enter'){page=1;load()}});
