@@ -35,7 +35,7 @@ async function fetchMedia(){
   const artist=clean(meta.Artist?.value)||"Blender Foundation / Wikimedia Commons";
   const sourceName=label.toLowerCase().includes("tears of steel")?"movie":"animation";
   const sizeMb=Math.round(info.size/1024/1024);
-  items.push({id:"blender-commons-"+page.pageid,title:label,kind:sourceName,label:"فيلم Blender مفتوح الترخيص",year:Number((label.match(/20\d{2}|19\d{2}/)||[])[0])||"",icon:"🎬",license,licenseUrl,credit:artist+" · "+license+" · المصدر Wikimedia Commons",date:String(info.timestamp||""),sizeMb,sources:[{q:info.mime==="video/mp4"?"MP4 · "+sizeMb+"MB":"WebM · "+sizeMb+"MB",url:fileUrl}],origin,archive:origin,provider:"Wikimedia Commons"});
+  items.push({id:"blender-commons-"+page.pageid,title:label,kind:sourceName,label:"فيلم Blender مفتوح الترخيص",year:Number((label.match(/20\d{2}|19\d{2}/)||[])[0])||"",icon:"🎬",license,licenseUrl,credit:artist+" · "+license+" · المصدر Wikimedia Commons",date:String(info.timestamp||""),sizeMb,sources:[{q:info.mime==="video/mp4"?"MP4 · "+sizeMb+"MB":"WebM · "+sizeMb+"MB",url:fileUrl}],origin,archive:origin,provider:"Wikimedia Commons",subtitleFile:page.title});
  }
  items.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  cache={date:Date.now(),items};

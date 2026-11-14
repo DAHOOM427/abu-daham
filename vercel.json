@@ -48,6 +48,10 @@
     {
       "src": "api/channel-health.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/arabic-subtitles.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -86,6 +90,10 @@
     {
       "src": "^/api/open-media/?$",
       "dest": "/api/open-media.js"
+    },
+    {
+      "src": "^/api/arabic-subtitles/?$",
+      "dest": "/api/arabic-subtitles.js"
     },
     {
       "src": "^/api/channel-health/?$",

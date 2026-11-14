@@ -369,8 +369,9 @@
  <div id="adFreePlayerPanel" class="ad-free-watch hidden">
   <div class="ad-free-watch-top"><div><span class="free-eyebrow">مشاهدة مباشرة داخل أبو داحم</span><h3 id="adWatchTitle">المشغل</h3></div><button id="adCloseWatch" type="button" class="ad-quiet-button">✕ إغلاق</button></div>
   <video id="adHtmlVideo" playsinline controls preload="metadata" controlsList="nodownload" aria-label="مشغل أبو داحم للفيديو" style="width:100%;aspect-ratio:16/9;background:black;border-radius:15px"></video>
-  <div class="ad-player-tools"><label for="adQuality">الجودة: <select id="adQuality"></select></label><button id="adFullScreen" type="button">⛶ ملء الشاشة</button><button id="adPictureInPicture" type="button">▣ نافذة صغيرة</button><span id="adPlaybackStatus"></span></div>
-  <p id="adVideoCredits" class="ad-video-credits"></p><div id="adVideoSources" class="ad-source-links"></div>
+  <div class="ad-player-tools"><label for="adQuality">الجودة: <select id="adQuality"></select></label><label for="adArabicSubtitles">الترجمة: <select id="adArabicSubtitles"><option value="ar">العربية</option><option value="off">إيقاف</option></select></label><span id="adArabicSubtitleStatus" role="status" aria-live="polite" style="font-size:12px;color:#b8f34b">حسب المصدر</span><button id="adFullScreen" type="button">⛶ ملء الشاشة</button><button id="adPictureInPicture" type="button">▣ نافذة صغيرة</button><span id="adPlaybackStatus"></span></div>
+  <p style="font-size:12px;color:#a7b6a4">يحمل الموقع الترجمة العربية المتوفرة من الإنترنت تلقائيًا عند التشغيل، ولا تحتاج لرفع ملف من جهازك. لا تتوفر ترجمة مولدة آليًا من الصوت في هذه المرحلة.</p>
+   <p id="adVideoCredits" class="ad-video-credits"></p><div id="adVideoSources" class="ad-source-links"></div>
  </div>
  <div class="ad-free-policy"><strong>الترخيص والمصدر</strong><p>أفلام Blender الواردة هنا تحت تراخيص Creative Commons مع نسب العمل لأصحابه وترك شارة النهاية كاملة. مقاطع العائلة تبقى على جهازك فقط. القنوات الرسمية وروابط الأنمي أو المسلسلات التي لا تسمح بالتضمين تُفتح في مواقع أصحابها، وقد تعرض إعلاناتهم. لا يوجد بث رياضي مقرصن أو ضمان 4K لجميع الفيديوهات.</p></div>
 </section>
@@ -991,8 +992,56 @@ function renderAdMedia(){
  empty.classList.toggle('hidden',shown.length>0);
  empty.textContent=adMediaCategory==='family'?'اختر فيلمًا طويلًا من جهازك لتشاهده هنا، بدون رفعه للإنترنت.':adMediaCategory==='anime'?'لم تُضف بعد مسلسلات أنمي كاملة مرخّصة للتشغيل الداخلي. يمكن فتح المصادر الرسمية المعروضة.':'لا توجد حاليًا أعمال طويلة مرخّصة للتشغيل الداخلي في هذا القسم. المقاطع القصيرة تجربة اختيارية للمشغّل فقط.';
 }
+
+let adArabicSubtitleRequest=0,adArabicSubtitleBlobUrl=null;
+const adArabicSubtitleCache=new Map();
+function adClearArabicSubtitles(){
+ const video=$('#adHtmlVideo');
+ for(const track of video.querySelectorAll('track[data-ad-ar]'))track.remove();
+ for(const track of Array.from(video.textTracks||[]))if(track.language==='ar')track.mode='disabled';
+ if(adArabicSubtitleBlobUrl){URL.revokeObjectURL(adArabicSubtitleBlobUrl);adArabicSubtitleBlobUrl=null;}
+}
+async function adLoadArabicSubtitles(item){
+ const request=++adArabicSubtitleRequest;
+ adClearArabicSubtitles();
+ const status=$('#adArabicSubtitleStatus');
+ if($('#adArabicSubtitles').value!=='ar'){status.textContent='الترجمة متوقفة';return;}
+ const file=item?.provider==='Wikimedia Commons'?String(item.subtitleFile||''):'';
+ if(!/^File:[^?#\r\n]{1,220}\.(webm|mp4|ogv)$/i.test(file)){
+  status.textContent='لا تتوفر ترجمة عربية موثقة عبر الموقع لهذا الفيديو حاليًا';return;
+ }
+ status.textContent='جارٍ البحث عن ترجمة عربية من المصدر...';
+ try{
+  let vtt=adArabicSubtitleCache.get(file);
+  if(!vtt){
+   const response=await fetch('/api/arabic-subtitles?file='+encodeURIComponent(file),{credentials:'same-origin'});
+   if(!response.ok)throw Error(response.status===404?'missing':'source');
+   vtt=await response.text();
+   if(!/^\s*WEBVTT(?:\s|$)/.test(vtt))throw Error('invalid');
+   if(adArabicSubtitleCache.size>=12)adArabicSubtitleCache.delete(adArabicSubtitleCache.keys().next().value);
+   adArabicSubtitleCache.set(file,vtt);
+  }
+  if(request!==adArabicSubtitleRequest||adActiveItem!==item||$('#adArabicSubtitles').value!=='ar')return;
+  adArabicSubtitleBlobUrl=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));
+  const track=document.createElement('track');
+  track.dataset.adAr='1';track.kind='subtitles';track.srclang='ar';track.label='العربية';
+  track.default=true;track.src=adArabicSubtitleBlobUrl;
+  track.addEventListener('load',()=>{
+   if(request!==adArabicSubtitleRequest)return;
+   track.track.mode='showing';
+   status.textContent='✓ الترجمة العربية مفعّلة';
+  });
+  track.addEventListener('error',()=>{if(request===adArabicSubtitleRequest)status.textContent='تعذر عرض الترجمة في هذا المتصفح';});
+  $('#adHtmlVideo').appendChild(track);
+  track.track.mode='showing';
+  status.textContent='تم العثور على الترجمة العربية · جارٍ عرضها';
+ }catch(e){
+  if(request===adArabicSubtitleRequest)status.textContent=e.message==='missing'?'لا توجد ترجمة عربية لهذا الفيديو لدى المصدر':'تعذر جلب الترجمة الآن';
+ }
+}
+
 function closeAdVideo(){
- const v=$('#adHtmlVideo');v.pause();v.removeAttribute('src');v.load();
+ const v=$('#adHtmlVideo');v.pause();++adArabicSubtitleRequest;adClearArabicSubtitles();v.removeAttribute('src');v.load();
  adActiveItem=null;$('#adFreePlayerPanel').classList.add('hidden');$('#adPlaybackStatus').textContent='';
 }
 function openAdVideo(item){
@@ -1006,6 +1055,7 @@ function openAdVideo(item){
   '<a target="_blank" rel="noopener noreferrer" href="'+esc(item.origin)+'">صفحة المنتج</a><a target="_blank" rel="noopener noreferrer" href="'+esc(item.licenseUrl)+'">الترخيص</a><a target="_blank" rel="noopener noreferrer" href="'+esc(item.archive)+'">صفحة المصدر</a>'+adMediaDownloadLink(item);
  $('#adFreePlayerPanel').classList.remove('hidden');
  $('#adFreePlayerPanel').scrollIntoView({behavior:'smooth',block:'start'});
+ adLoadArabicSubtitles(item);
  v.play().catch(()=>{$('#adPlaybackStatus').textContent='اضغط ▶ داخل المشغل لبدء الفيديو'});
 }
 $('#adToggleDemos').onclick=()=>{adShowDemos=!adShowDemos;$('#adToggleDemos').textContent=adShowDemos?'إخفاء الأفلام التجريبية القصيرة':'عرض أفلام قصيرة لتجربة المشغل فقط';renderAdMedia();};
@@ -1031,7 +1081,9 @@ $('#adQuality').addEventListener('change',e=>{
  v.src=s.url;v.load();
  v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(time)&&time>0)try{v.currentTime=Math.min(time,v.duration||time)}catch{}if(wasPlaying)v.play().catch(()=>{})},{once:true});
  $('#adPlaybackStatus').textContent='الجودة: '+s.q;
+ adLoadArabicSubtitles(adActiveItem);
 });
+$('#adArabicSubtitles').addEventListener('change',()=>{if(adActiveItem)adLoadArabicSubtitles(adActiveItem)});
 $('#adCloseWatch').onclick=closeAdVideo;
 $('#adFullScreen').onclick=()=>{
  const v=$('#adHtmlVideo');if(v.requestFullscreen)v.requestFullscreen().catch(()=>{});else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
@@ -1044,7 +1096,7 @@ $('#adHtmlVideo').addEventListener('error',()=>{
  if(!adActiveItem)return;
  $('#adPlaybackStatus').textContent='تعذر تشغيل الملف في متصفحك. جرّب جودة أخرى أو افتح رابط المصدر الأصلي.';
 });
-window.addEventListener('pagehide',()=>adFamilyEntries.forEach(x=>URL.revokeObjectURL(x.sources[0].url)));
+window.addEventListener('pagehide',()=>{++adArabicSubtitleRequest;adClearArabicSubtitles();adFamilyEntries.forEach(x=>URL.revokeObjectURL(x.sources[0].url))});
 renderAdMedia();
 
 
