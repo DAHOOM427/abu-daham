@@ -940,7 +940,7 @@ $('#adOpenRefresh').onclick=()=>loadOpenMedia(true);
 function adMediaDownloadLink(item){
  if(item?.provider!=='Wikimedia Commons'||!item.licenseUrl||!item.sources?.length)return '';
  const url=String(item.sources[0].url||'');
- const license=String(item.licenseUrl||'').replace(/\\/$/,'');
+ const license=String(item.licenseUrl||'');
  if(!/^https:\/\/upload\.wikimedia\.org\//.test(url)||!/^https:\/\/creativecommons\.org\/licenses\/by(?:-sa)?\/(?:2\.5|3\.0|4\.0)\/?$/.test(license))return '';
  return '<a class="ad-licensed-download" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" title="تنزيل من Wikimedia Commons حسب دعم المتصفح">📥 ملف مجاني للتنزيل</a>';
 }
