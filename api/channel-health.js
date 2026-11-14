@@ -53,7 +53,7 @@ async function check(x){
   const content=await r.text();
   const cors=String(r.headers.get("access-control-allow-origin")||"").trim();
   const browserCors=cors==="*"||cors===origin?cors:"";
-  return {id:x.id,manifestReachable:r.ok&&/^\\s*#EXTM3U/.test(content.replace(/^\\uFEFF/,"").slice(0,300)),http:r.status,browserCors,latencyMs:Date.now()-started};
+  return {id:x.id,manifestReachable:r.ok&&/^\s*#EXTM3U/.test(content.replace(/^\uFEFF/,"").slice(0,300)),http:r.status,browserCors,latencyMs:Date.now()-started};
  }catch(e){return {id:x.id,manifestReachable:false,http:0,browserCors:"",reason:e.name==="TimeoutError"?"timeout":"network",latencyMs:Date.now()-started}}
 }
 export default async function handler(req,res){
