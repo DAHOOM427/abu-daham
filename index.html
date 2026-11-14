@@ -324,7 +324,7 @@
   <button data-chcat="documentary">🌿 وثائقية</button><button data-chcat="entertainment">📺 منوعة</button>
   <button data-chcat="kids">🧸 أطفال</button><button data-chcat="sports">⚽ رياضة</button>
  </div>
- <div id="channelDirectoryStatus" class="ch-source-note">جاري تحميل القنوات المجانية التي تدعم البث المباشر داخل الموقع...</div>
+ <div id="channelHealthStatus" class="ch-source-note">جارٍ تجهيز فحص القنوات المختارة...</div><div id="channelDirectoryStatus" class="ch-source-note">جاري تحميل القنوات المجانية التي تدعم البث المباشر داخل الموقع...</div>
  <div class="ch-grid" id="channelGrid"></div>
  <button id="channelLoadMore" type="button" class="ch-more hidden">عرض قنوات أكثر</button>
  <div class="ch-empty hidden" id="channelEmpty">لا توجد قنوات مطابقة للبحث.</div>
@@ -565,7 +565,7 @@ async function load(){
   return;
  }
  if(type==='channels'){
-  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();loadFreeTV();return;
+  $('#channelHub').classList.remove('hidden');$('#hero').classList.add('hidden');$('#kick').classList.add('hidden');$('#filters').classList.add('hidden');$('.pager').classList.add('hidden');$('#results').innerHTML='';$('#status').textContent='';renderChannels();loadFreeTV();loadChannelHealth();return;
  }
  if(type==='free'){
   $('#freeHub').classList.remove('hidden');
@@ -651,8 +651,24 @@ const channelCategoryNames={islamic:'قنوات إسلامية',news:'قنوات
 let channelCategory='verified',currentChannel=null,channelFavorites=new Set();
 try{channelFavorites=new Set(JSON.parse(localStorage.getItem('abu_daham_channel_favorites_v1')||'[]'))}catch{}
 
+let channelHealth={},channelHealthPromise=null,channelHealthUpdated=0;
 let freeTVChannels=[],freeTVPromise=null,channelHls=null,channelVisibleCount=180,channelPlayTimeout=null,channelLibPromise=null,channelGeneration=0,channelLagTimer=null,freeTVTotal=0,freeTVMatchCount=0,freeTVHasMore=false,freeTVSeq=0,freeTVLoading=false,freeTVSearchTimer=null;
 function allChannels(){return [...officialChannels.filter(x=>x.stream),...freeTVChannels,...officialChannels.filter(x=>!x.stream)]}
+async function loadChannelHealth(force=false){
+ if(channelHealthPromise)return channelHealthPromise;
+ if(!force&&channelHealthUpdated&&Date.now()-channelHealthUpdated<5*60*1000)return;
+ $('#channelHealthStatus').textContent='جارٍ فحص وصول البث للقنوات المختارة...';
+ channelHealthPromise=api('/api/channel-health').then(data=>{
+  channelHealth=Object.fromEntries((data.items||[]).map(x=>[x.id,x]));
+  channelHealthUpdated=Date.now();
+  const all=data.items||[],good=all.filter(x=>x.manifestReachable).length;
+  $('#channelHealthStatus').textContent='قنوات منتقاة: '+good.toLocaleString('ar-SA')+' من '+all.length.toLocaleString('ar-SA')+' وصلت قوائم بثها في آخر فحص. لا يضمن ذلك تشغيلها على جهازك أو خلوها من إعلانات الناقل. القنوات غير المتاحة أُخفيت من تبويب «قنوات مفحوصة» مؤقتًا.';
+  renderChannels();
+ }).catch(()=>{
+  $('#channelHealthStatus').textContent='تعذر تجديد فحص القنوات الآن؛ آخر نتائج محفوظة قد تكون قديمة. جرّب لاحقًا.';
+ }).finally(()=>{channelHealthPromise=null});
+ return channelHealthPromise;
+}
 function channelLogo(ch){
  const logo=ch.logo||"https://www.google.com/s2/favicons?sz=64&domain_url="+encodeURIComponent("https://"+ch.host);
  return '<span class="ch-brand"><img loading="lazy" alt="" src="'+esc(logo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="ch-brand-fallback hidden">'+esc(ch.emoji||'📡')+'</span></span>';
@@ -688,7 +704,7 @@ async function loadFreeTV(append=false){
 }
 function renderChannels(){
  const search=$('#channelSearch').value.trim().toLowerCase();
- const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
+ const filtered=allChannels().filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?(Boolean(x.checkedServer)&&channelHealth[x.id]?.manifestReachable!==false):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host,x.group,x.country].join(' ').toLowerCase().includes(search))).sort((a,b)=>channelCategory==='sports'?(Number(b.kind==='official_only')-Number(a.kind==='official_only')):0);
  $('#channelCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.chcat===channelCategory));
  const officialCount=officialChannels.filter(x=>(channelCategory==='all'||(channelCategory==='favorites'?channelFavorites.has(x.id):channelCategory==='verified'?Boolean(x.checkedServer):x.category===channelCategory))&&(!search||[x.name,x.desc,x.host].join(' ').toLowerCase().includes(search))).length;
  const totalMatches=['verified','favorites'].includes(channelCategory)?filtered.length:officialCount+freeTVMatchCount;
@@ -696,7 +712,7 @@ function renderChannels(){
  const shown=filtered.slice(0,channelVisibleCount);
  $('#channelGrid').innerHTML=shown.map(ch=>
  '<article class="ch-card"><div class="ch-card-top"><span class="ch-identity">'+channelLogo(ch)+'</span><button class="ch-favorite '+(channelFavorites.has(ch.id)?'on':'')+'" type="button" data-favorite="'+esc(ch.id)+'" aria-label="إضافة أو إزالة القناة من المفضلة" title="المفضلة">'+(channelFavorites.has(ch.id)?'♥':'♡')+'</button></div>'+
- '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?'✓ فُحص الوصول للبث':ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
+ '<h3>'+esc(ch.name)+'</h3><small>'+esc(ch.desc||ch.group||ch.country||'قناة مجانية')+'</small><div class="ch-meta"><span>'+esc(channelCategoryNames[ch.category]||'قنوات عالمية')+'</span><span>'+esc(ch.access||((ch.checkedServer?(channelHealth[ch.id]?.manifestReachable===true?(channelHealth[ch.id]?.browserCors?'✓ المصدر متاح الآن':'✓ وصول الخادم · المتصفح قد يختلف'):channelHealth[ch.id]?.manifestReachable===false?'⚠ تعذر اتصال البث':'✓ فحص سابق'):ch.stream?'بث لم يُفحص':'إتاحة عبر المصدر الرسمي')))+'</span></div><button type="button" class="ch-watch" data-open-channel="'+esc(ch.id)+'">▶ '+(ch.stream?'شغّل الآن':ch.access==='اشتراك مدفوع'?'تفاصيل الاشتراك':ch.access?.includes('أمريكا')?'تفاصيل الإتاحة':ch.kind==='official_only'?'افتح المصدر الرسمي':'شاهد القناة')+'</button></article>').join('');
  $('#channelLoadMore').classList.toggle('hidden',(!freeTVHasMore&&filtered.length<=channelVisibleCount)||['verified','favorites'].includes(channelCategory));
  $('#channelLoadMore').textContent=freeTVHasMore?'عرض 120 قناة أخرى':'عرض المزيد';
  $('#channelEmpty').classList.toggle('hidden',filtered.length>0);
@@ -850,7 +866,7 @@ function openChannelRoom(id){
 }
 $('#channelLoadMore').onclick=()=>{if(freeTVHasMore)loadFreeTV(true);else{channelVisibleCount+=120;renderChannels()}};
 $('#channelSearch').addEventListener('input',()=>{clearTimeout(freeTVSearchTimer);if(['verified','favorites'].includes(channelCategory)){renderChannels();return}freeTVSearchTimer=setTimeout(()=>loadFreeTV(false),350)});
-$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;channelVisibleCount=180;if(['verified','favorites'].includes(channelCategory))renderChannels();else loadFreeTV(false);});
+$('#channelCategories').addEventListener('click',e=>{const b=e.target.closest('button[data-chcat]');if(!b)return;channelCategory=b.dataset.chcat;channelVisibleCount=180;if(['verified','favorites'].includes(channelCategory)){renderChannels();if(channelCategory==='verified')loadChannelHealth();}else loadFreeTV(false);});
 $('#channelGrid').addEventListener('click',e=>{
  const fav=e.target.closest('button[data-favorite]');if(fav){const id=fav.dataset.favorite;if(channelFavorites.has(id))channelFavorites.delete(id);else channelFavorites.add(id);try{localStorage.setItem('abu_daham_channel_favorites_v1',JSON.stringify([...channelFavorites]))}catch{}renderChannels();return}
  const b=e.target.closest('button[data-open-channel]');if(b)openChannelRoom(b.dataset.openChannel);
@@ -994,8 +1010,8 @@ function adSetDiscoverMode(mode){
  $('#adDiscoverResults').replaceChildren();
  $('#adDiscoverDetail').classList.add('hidden');
  $('#adDiscoverKind').classList.toggle('hidden',!['catalog','latest'].includes(mode));
- $('#adDiscoverQuery').classList.toggle('hidden',mode==='open');
- $('#adDiscoverForm').querySelector('button[type=submit]').classList.toggle('hidden',mode==='open');
+ $('#adDiscoverQuery').classList.toggle('hidden',mode==='open'||mode==='latest');
+ $('#adDiscoverForm').querySelector('button[type=submit]').classList.toggle('hidden',mode==='open'||mode==='latest');
  $('#adDiscoverQuery').placeholder=mode==='sports'?'ابحث عن نادي أو بطولة...':mode==='channels'?'ابحث عن اسم قناة...':'اكتب اسم فيلم أو مسلسل أو أنمي...';
  $('#adDiscoverStatus').textContent=mode==='sports'?'تابع النتائج ومواعيد المباريات من مركز الرياضة داخل أبو داحم.':mode==='channels'?'افتح القنوات المفحوصة داخل أبو داحم.':mode==='latest'?'اكتشف إصدارات هذا العام من مصادر بيانات الأعمال؛ بيانات فقط وليست أفلامًا مرخّصة للتشغيل.':mode==='open'?'أفلام Blender المفتوحة الترخيص، تُحدّث تلقائيًا من Wikimedia Commons.':'ابحث عن عمل، واعرض تفاصيله داخل الموقع. تشغيل العمل يحتاج مصدرًا يسمح بذلك.';
  if(mode==='latest'||mode==='open'){adDiscoverSubmit();return}
@@ -1047,6 +1063,7 @@ async function adDiscoverSubmit(){
 }
 $('#adDiscoverModes').addEventListener('click',e=>{const b=e.target.closest('[data-discover-mode]');if(b)adSetDiscoverMode(b.dataset.discoverMode)});
 $('#adDiscoverForm').addEventListener('submit',e=>{e.preventDefault();adDiscoverSubmit()});
+$('#adDiscoverKind').addEventListener('change',()=>{if(adDiscoverMode==='latest')adDiscoverSubmit()});
 $('#adDiscoverResults').addEventListener('click',e=>{
  const b=e.target.closest('[data-discover-item]');if(!b)return;
  const x=adDiscoverItems[Number(b.dataset.discoverItem)];if(!x)return;
