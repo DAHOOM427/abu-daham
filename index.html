@@ -1006,7 +1006,7 @@ async function adDiscoverSubmit(){
   if(request!==adDiscoverRequest||type!=='discover')return;
   adDiscoverItems=Array.isArray(res.items)?res.items:[];
   $('#adDiscoverStatus').textContent=adDiscoverItems.length?'هذه نتائج البيانات المتاحة داخل أبو داحم؛ اضغط أي عمل للتفاصيل.':'ما حصلت نتيجة في قاعدة البيانات الحالية. جرّب اسمًا آخر.';
-  $('#adDiscoverResults').innerHTML=adDiscoverItems.map((x,i)=>'<button type="button" class="ad-discover-card" data-discover-item="'+i+'">'+(x.poster?'<img loading="lazy" src="'+esc(x.poster)+'" alt="">':'<div class="ad-discover-noimage">🎬</div>')+'<div><strong>'+esc(x.title||'بدون عنوان')+'</strong><small>'+esc(x.year||'')+' · '+esc(({movie:'فيلم',tv:'مسلسل',anime:'أنمي'}[x.type]||x.type||'محتوى')+'</small></div></button>').join('');
+  $('#adDiscoverResults').innerHTML=adDiscoverItems.map((x,i)=>'<button type="button" class="ad-discover-card" data-discover-item="'+i+'">'+(x.poster?'<img loading="lazy" src="'+esc(x.poster)+'" alt="">':'<div class="ad-discover-noimage">🎬</div>')+'<div><strong>'+esc(x.title||'بدون عنوان')+'</strong><small>'+esc(x.year||'')+' · '+esc(({movie:'فيلم',tv:'مسلسل',anime:'أنمي'}[x.type]||x.type||'محتوى'))+'</small></div></button>').join('');
  }catch(e){if(request!==adDiscoverRequest)return;$('#adDiscoverStatus').textContent='تعذر جلب النتائج الآن. '+(e.message||'حاول لاحقًا')}
 }
 $('#adDiscoverModes').addEventListener('click',e=>{const b=e.target.closest('[data-discover-mode]');if(b)adSetDiscoverMode(b.dataset.discoverMode)});
